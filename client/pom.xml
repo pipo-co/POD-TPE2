@@ -6,6 +6,7 @@
     <artifactId>tp2-parent</artifactId>
     <groupId>ar.edu.itba.pod</groupId>
     <version>1.0</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>tp2-client</artifactId>
   <version>1.0</version>
