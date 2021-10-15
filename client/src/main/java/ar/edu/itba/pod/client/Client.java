@@ -19,7 +19,8 @@ import com.hazelcast.core.IMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ar.edu.itba.pod.client.Tree.DataSources;
+import ar.edu.itba.pod.models.DataSources;
+import ar.edu.itba.pod.models.Tree;
 
 public class Client {
     private static final Logger logger = LoggerFactory.getLogger(Client.class);
@@ -58,16 +59,12 @@ public class Client {
     public void query1(Path csvPath, String city) throws IOException {
         final Map<String, List<String>> map;
         
-
         try(final Stream<String> neighbourhoodLines = Files.lines(csvPath)) {
             neighbourhoodLines
                 .map(line -> line.split(";"))
-                .map(values -> DataSources.valueOf(city).fromCSV(values))
+                .map(values -> DataSources.valueOf(city).treeFromCSV(values))
                 .collect(Collectors.toMap(Tree::getNeighbourhoodName, Function.identity()));
         }
-
-
-
     }
 }
 

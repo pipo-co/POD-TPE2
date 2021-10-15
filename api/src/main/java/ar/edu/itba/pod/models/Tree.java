@@ -1,6 +1,4 @@
-package ar.edu.itba.pod.client;
-
-import java.util.function.Function;
+package ar.edu.itba.pod.models;
 
 public class Tree {
 
@@ -30,21 +28,5 @@ public class Tree {
 
     public String getCommonName() {
         return commonName;
-    }
-
-    enum DataSources {
-        BUE(csv -> new Tree(csv[2], csv[4], csv[7])),
-        VCU(csv -> new Tree(csv[2], csv[6], csv[12])),
-        ;
-
-        final Function<String[], Tree> function;
-
-        private DataSources(final Function<String[], Tree> fromCsv) {
-            this.function = fromCsv;
-        }
-
-        public Tree fromCSV(final String[] csvLine) {
-            return function.apply(csvLine);
-        }
     }
 }
