@@ -1,9 +1,12 @@
 package ar.edu.itba.pod.client;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.hazelcast.client.HazelcastClient;
@@ -27,14 +30,14 @@ public class Client {
 
     public static void main(String[] args) {
         logger.info("hz-config Client Starting ...");
-// Client Config
+        // Client Config
         ClientConfig clientConfig = new ClientConfig();
-// Group Config
+        // Group Config
         GroupConfig groupConfig = new
             GroupConfig().setName(GROUP_NAME).setPassword(GROUP_PASS);
         clientConfig.setGroupConfig(groupConfig);
 
-// Client Network Config
+        // Client Network Config
         ClientNetworkConfig clientNetworkConfig = new ClientNetworkConfig();
 
         String[] addresses = {"localhost:5701"};
@@ -48,17 +51,19 @@ public class Client {
         testMapFromMember.set(1, "test1");
         IMap<Integer, String> testMap = hazelcastInstance.getMap(mapName);
         System.out.println(testMap.get(1));
-// Shutdown
+        // Shutdown
         HazelcastClient.shutdownAll();
     }
 
-    public void query1(Path csvPath, String city) {
+    public void query1(Path csvPath, String city) throws IOException {
         final Map<String, List<String>> map;
         
 
         try(final Stream<String> neighbourhoodLines = Files.lines(csvPath)) {
-            neighbourhoodLines.map(csvLine -> csvLine.split(';')).map(csvLine -> DataSources. )
-        
+            neighbourhoodLines
+                .map(line -> line.split(";"))
+                .map(values -> DataSources.valueOf(city).fromCSV(values))
+                .collect(Collectors.toMap(Tree::getNeighbourhoodName, Function.identity()));
         }
 
 

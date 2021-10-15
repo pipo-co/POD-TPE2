@@ -34,16 +34,17 @@ public class Tree {
 
     enum DataSources {
         BUE(csv -> new Tree(csv[2], csv[4], csv[7])),
-        VCU(csv -> new Tree(csv[2], csv[6], csv[12]));
+        VCU(csv -> new Tree(csv[2], csv[6], csv[12])),
+        ;
 
-        final Function<String[], Tree> fromCsv;
+        final Function<String[], Tree> function;
 
         private DataSources(final Function<String[], Tree> fromCsv) {
-            this.fromCsv = fromCsv;
+            this.function = fromCsv;
         }
 
-        // public DataSources fromCity(final String cityName) {
-            
-        // }
+        public Tree fromCSV(final String[] csvLine) {
+            return function.apply(csvLine);
+        }
     }
 }
