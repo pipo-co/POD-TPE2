@@ -72,25 +72,24 @@ public final class Client {
     public static final String TREE_IN_FILE_PREFIX = "arboles";
     public static final String TREE_IN_FILE_SUFFIX = ".csv";
     public static Path treeFilePath(final String inPath, final String cityCode) {
-        return requireRegularFile(Path.of(inPath + TREE_IN_FILE_PREFIX + cityCode + TREE_IN_FILE_SUFFIX));
+        return requireReadable(Path.of(inPath, TREE_IN_FILE_PREFIX + cityCode + TREE_IN_FILE_SUFFIX));
     }
 
     public static final String HOOD_IN_FILE_PREFIX = "barrios";
     public static final String HOOD_IN_FILE_SUFFIX = ".csv";
     public static Path hoodFilePath(final String inPath, final String cityCode) {
-        return requireRegularFile(Path.of(inPath + HOOD_IN_FILE_PREFIX + cityCode + HOOD_IN_FILE_SUFFIX));
+        return requireReadable(Path.of(inPath, HOOD_IN_FILE_PREFIX + cityCode + HOOD_IN_FILE_SUFFIX));
     }
 
     public static final String QUERY_OUT_FILE_PREFIX = "query";
     public static final String QUERY_OUT_FILE_SUFFIX = ".csv";
     public static Path queryOutPath(final String outPath, final int queryCount) {
-        return requireRegularFile(Path.of(outPath + QUERY_OUT_FILE_PREFIX + queryCount + QUERY_OUT_FILE_SUFFIX));
+        return requireWritable(Path.of(outPath, QUERY_OUT_FILE_PREFIX + queryCount + QUERY_OUT_FILE_SUFFIX));
     }
 
     public static final String TIME_OUT_FILE_PREFIX = "time";
     public static final String TIME_OUT_FILE_SUFFIX = ".txt";
-    public static Path timeOutPath(final String inPath, final int queryCount) {
-        return requireRegularFile(Path.of(inPath + TIME_OUT_FILE_PREFIX + queryCount + TIME_OUT_FILE_SUFFIX));
+        return requireWritable(Path.of(outPath, TIME_OUT_FILE_PREFIX + queryCount + TIME_OUT_FILE_SUFFIX));
     }
 
     public static void main(final String[] args) throws IOException, ExecutionException, InterruptedException {
