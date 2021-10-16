@@ -7,7 +7,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.hazelcast.core.HazelcastInstance;
@@ -15,7 +14,7 @@ import com.hazelcast.core.ICompletableFuture;
 import com.hazelcast.core.MultiMap;
 import com.hazelcast.mapreduce.Job;
 import com.hazelcast.mapreduce.KeyValueSource;
-import ar.edu.itba.pod.query1.SetContainsKeyPredicate;
+import ar.edu.itba.pod.SetContainsKeyPredicate;
 import ar.edu.itba.pod.query1.Q1Answer;
 import ar.edu.itba.pod.CountCombinerFactory;
 import ar.edu.itba.pod.SortCollator;
