@@ -41,8 +41,8 @@ public final class Client {
     public static final String PROPERTY_GROUP_PASS  = "pass";
     public static final String PROPERTY_ADDRESSES   = "addresses";
 
-    public static final String DEFAULT_IN_PATH    = ".";
-    public static final String DEFAULT_OUT_PATH   = ".";
+    public static final String DEFAULT_IN_PATH    = "./";
+    public static final String DEFAULT_OUT_PATH   = "./";
     public static final String DEFAULT_GROUP_NAME = "g16";
     public static final String DEFAULT_GROUP_PASS = "g16-pass";
     public static final String DEFAULT_ADDRESS    = "127.0.0.1:" + NetworkConfig.DEFAULT_PORT;
