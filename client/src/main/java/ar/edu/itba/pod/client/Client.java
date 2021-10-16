@@ -4,6 +4,7 @@ import static ar.edu.itba.pod.client.Queries.IN_DELIM;
 import static java.util.Objects.requireNonNull;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -123,7 +124,8 @@ public final class Client {
 
         logger.info("Executing query " + queryCount);
 
-        try(final var treeLines = Files.lines(treeCsv); final var hoodLines = Files.lines(hoodCsv)) {
+        try(final var treeLines = Files.lines(treeCsv, StandardCharsets.ISO_8859_1);
+            final var hoodLines = Files.lines(hoodCsv, StandardCharsets.ISO_8859_1)) {
             getQuery(queryCount).execute(
                 hazelcast,
                 treeLines
