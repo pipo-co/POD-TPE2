@@ -2,6 +2,7 @@ package ar.edu.itba.pod.client;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Stream;
 
 import com.hazelcast.core.HazelcastInstance;
@@ -14,5 +15,5 @@ public interface Query {
     void execute(
         final HazelcastInstance hazelcast,
         final Stream<Tree> trees, final Stream<Neighbourhood> hoods,
-        final Path queryOut, final Path timeOut) throws IOException;
+        final Path queryOut, final Path timeOut) throws IOException, ExecutionException, InterruptedException;
 }

@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Stream;
 
 import com.hazelcast.client.HazelcastClient;
@@ -91,7 +92,7 @@ public final class Client {
         return requireRegularFile(Path.of(inPath + TIME_OUT_FILE_PREFIX + queryCount + TIME_OUT_FILE_SUFFIX));
     }
 
-    public static void main(final String[] args) throws IOException {
+    public static void main(final String[] args) throws IOException, ExecutionException, InterruptedException {
         logger.info("Client Starting ...");
 
         // Required
@@ -157,7 +158,7 @@ public final class Client {
         public void execute(
             final HazelcastInstance hazelcast,
             final Stream<Tree> trees, final Stream<Neighbourhood> hoods,
-            final Path queryOut, final Path timeOut) throws IOException {
+            final Path queryOut, final Path timeOut) throws IOException, ExecutionException, InterruptedException {
             query.execute(hazelcast, trees, hoods, queryOut, timeOut);
         }
     }
