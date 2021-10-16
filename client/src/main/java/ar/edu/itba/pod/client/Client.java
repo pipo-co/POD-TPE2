@@ -4,7 +4,7 @@ import static ar.edu.itba.pod.client.Queries.IN_DELIM;
 import static java.util.Objects.requireNonNull;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -38,12 +38,14 @@ public final class Client {
     public static final String PROPERTY_CITY        = "city";
     public static final String PROPERTY_IN_PATH     = "inPath";
     public static final String PROPERTY_OUT_PATH    = "outPath";
+    public static final String PROPERTY_CHARSET     = "charset";
     public static final String PROPERTY_GROUP_NAME  = "name";
     public static final String PROPERTY_GROUP_PASS  = "pass";
     public static final String PROPERTY_ADDRESSES   = "addresses";
 
     public static final String DEFAULT_IN_PATH    = ".";
     public static final String DEFAULT_OUT_PATH   = ".";
+    public static final String DEFAULT_CHARSET    = "ISO-8859-1";
     public static final String DEFAULT_GROUP_NAME = "g16";
     public static final String DEFAULT_GROUP_PASS = "g16-pass";
     public static final String DEFAULT_ADDRESS    = "127.0.0.1:" + NetworkConfig.DEFAULT_PORT;
@@ -53,6 +55,10 @@ public final class Client {
             throw new IllegalArgumentException("Invalid query count " + queryCount + ". Values go from 1 to " + QueryEnum.SIZE);
         }
         return QueryEnum.VALUES.get(queryCount - 1);
+    }
+
+    private static Charset parseCharset(final String charsetName) {
+        return Charset.forName(charsetName == null ? DEFAULT_CHARSET : charsetName);
     }
 
     private static final String PROPERTY_LIST_DELIM = ";";
@@ -106,6 +112,7 @@ public final class Client {
         final String        city        = requireNonNull(System.getProperty(PROPERTY_CITY));
 
         // Optional
+        final Charset       charset     = parseCharset(System.getProperty(PROPERTY_CHARSET, DEFAULT_CHARSET));
         final String        groupName   = System.getProperty(PROPERTY_GROUP_NAME, DEFAULT_GROUP_NAME);
         final String        groupPass   = System.getProperty(PROPERTY_GROUP_PASS, DEFAULT_GROUP_PASS);
         final List<String>  addresses   = parseAddresses(System.getProperty(PROPERTY_ADDRESSES));
@@ -129,8 +136,8 @@ public final class Client {
 
         logger.info("Executing query " + queryCount);
 
-        try(final var treeLines = Files.lines(treeCsv, StandardCharsets.ISO_8859_1);
-            final var hoodLines = Files.lines(hoodCsv, StandardCharsets.ISO_8859_1)) {
+        try(final var treeLines = Files.lines(treeCsv, charset);
+            final var hoodLines = Files.lines(hoodCsv, charset)) {
             getQuery(queryCount).execute(
                 hazelcast,
                 treeLines
