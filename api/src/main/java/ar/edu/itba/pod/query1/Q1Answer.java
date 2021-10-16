@@ -48,6 +48,14 @@ public class Q1Answer implements Comparable<Q1Answer>, DataSerializable {
         treeCount   = in.readInt();
     }
 
+    @Override
+    public String toString() {
+        return "Q1Answer{" +
+            "hood='" + hood + '\'' +
+            ", treeCount=" + treeCount +
+            '}';
+    }
+
     public String getHood() {
         return hood;
     }

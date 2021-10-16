@@ -32,6 +32,14 @@ public class Neighbourhood implements DataSerializable {
         population  = in.readLong();
     }
 
+    @Override
+    public String toString() {
+        return "Neighbourhood{" +
+            "name='" + name + '\'' +
+            ", population=" + population +
+            '}';
+    }
+
     public String getName() {
         return name;
     }

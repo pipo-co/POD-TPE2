@@ -38,6 +38,15 @@ public class Tree implements DataSerializable {
         name        = in.readUTF();
     }
 
+    @Override
+    public String toString() {
+        return "Tree{" +
+            "hoodName='" + hoodName + '\'' +
+            ", hoodStreet='" + hoodStreet + '\'' +
+            ", name='" + name + '\'' +
+            '}';
+    }
+
     public String getHoodName() {
         return hoodName;
     }
