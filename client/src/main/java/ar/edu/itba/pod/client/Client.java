@@ -127,9 +127,11 @@ public final class Client {
             getQuery(queryCount).execute(
                 hazelcast,
                 treeLines
+                    .skip(1)
                     .map(line -> line.split(IN_DELIM))
                     .map(values -> DataSources.valueOf(city).treeFromCSV(values)),
                 hoodLines
+                    .skip(1)
                     .map(line -> line.split(IN_DELIM))
                     .map(values -> DataSources.valueOf(city).neighbourhoodFromCSV(values)),
                 queryOut,
