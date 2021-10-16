@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -62,10 +63,14 @@ public final class Client {
         return Arrays.asList(addressList.split(PROPERTY_LIST_DELIM));
     }
 
-    private static Path requireRegularFile(final Path path) {
-        if(!Files.isRegularFile(path)) {
+    private static Path requireReadable(final Path path) {
+        if(!Files.isReadable(path)) {
             throw new IllegalArgumentException("Path " + path + " must be a regular file");
         }
+        return path;
+    }
+    private static Path createWritableFile(final Path path) throws IOException {
+        Files.newByteChannel(path, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING).close();
         return path;
     }
 
@@ -83,13 +88,14 @@ public final class Client {
 
     public static final String QUERY_OUT_FILE_PREFIX = "query";
     public static final String QUERY_OUT_FILE_SUFFIX = ".csv";
-    public static Path queryOutPath(final String outPath, final int queryCount) {
-        return requireWritable(Path.of(outPath, QUERY_OUT_FILE_PREFIX + queryCount + QUERY_OUT_FILE_SUFFIX));
+    public static Path queryOutPath(final String outPath, final int queryCount) throws IOException {
+        return createWritableFile(Path.of(outPath, QUERY_OUT_FILE_PREFIX + queryCount + QUERY_OUT_FILE_SUFFIX));
     }
 
     public static final String TIME_OUT_FILE_PREFIX = "time";
     public static final String TIME_OUT_FILE_SUFFIX = ".txt";
-        return requireWritable(Path.of(outPath, TIME_OUT_FILE_PREFIX + queryCount + TIME_OUT_FILE_SUFFIX));
+    public static Path timeOutPath(final String outPath, final int queryCount) throws IOException {
+        return createWritableFile(Path.of(outPath, TIME_OUT_FILE_PREFIX + queryCount + TIME_OUT_FILE_SUFFIX));
     }
 
     public static void main(final String[] args) throws IOException, ExecutionException, InterruptedException {
