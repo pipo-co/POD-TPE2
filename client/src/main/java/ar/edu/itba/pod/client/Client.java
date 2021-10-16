@@ -1,5 +1,6 @@
 package ar.edu.itba.pod.client;
 
+import static ar.edu.itba.pod.client.Queries.IN_DELIM;
 import static java.util.Objects.requireNonNull;
 
 import java.io.IOException;
@@ -7,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
@@ -17,6 +19,10 @@ import com.hazelcast.core.HazelcastInstance;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import ar.edu.itba.pod.models.DataSources;
+import ar.edu.itba.pod.models.Neighbourhood;
+import ar.edu.itba.pod.models.Tree;
 
 public final class Client {
     private static final Logger logger = LoggerFactory.getLogger(Client.class);
@@ -52,11 +58,6 @@ public final class Client {
             return List.of(DEFAULT_ADDRESS);
         }
         return Arrays.asList(addressList.split(PROPERTY_LIST_DELIM));
-    }
-
-    public static final String COLLECTIONS_PREFIX = "g16-";
-    public static String collectionName(final String name) {
-        return COLLECTIONS_PREFIX + name;
     }
 
     private static Path requireRegularFile(final Path path) {
@@ -120,7 +121,20 @@ public final class Client {
         );
 
         logger.info("Executing query " + queryCount);
-        getQuery(queryCount).execute(hazelcast, treeCsv, hoodCsv, queryOut, timeOut);
+
+        try(final var treeLines = Files.lines(treeCsv); final var hoodLines = Files.lines(hoodCsv)) {
+            getQuery(queryCount).execute(
+                hazelcast,
+                treeLines
+                    .map(line -> line.split(IN_DELIM))
+                    .map(values -> DataSources.valueOf(city).treeFromCSV(values)),
+                hoodLines
+                    .map(line -> line.split(IN_DELIM))
+                    .map(values -> DataSources.valueOf(city).neighbourhoodFromCSV(values)),
+                queryOut,
+                timeOut
+            );
+        }
 
         HazelcastClient.shutdownAll();
 
@@ -142,9 +156,9 @@ public final class Client {
 
         public void execute(
             final HazelcastInstance hazelcast,
-            final Path treeCsv, final Path hoodCsv,
+            final Stream<Tree> trees, final Stream<Neighbourhood> hoods,
             final Path queryOut, final Path timeOut) throws IOException {
-            query.execute(hazelcast, treeCsv, hoodCsv, queryOut, timeOut);
+            query.execute(hazelcast, trees, hoods, queryOut, timeOut);
         }
     }
 }
