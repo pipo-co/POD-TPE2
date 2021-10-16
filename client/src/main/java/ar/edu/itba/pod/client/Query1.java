@@ -35,7 +35,7 @@ public final class Query1 {
         final Path queryOut, final Path timeOut) throws IOException, ExecutionException, InterruptedException {
 
         final MultiMap<String, Tree> treeMap = hazelcast.getMultiMap(hazelcastNamespace("q1-tree-map"));
-        trees.forEach(tree -> treeMap.put(tree.getNeighbourhoodName(), tree));
+        trees.forEach(tree -> treeMap.put(tree.getHoodName(), tree));
 
         final String hoodsNameSetName = hazelcastNamespace("q1-hoods-name-set");
         final Set<String> hoodsName = hazelcast.getSet(hoodsNameSetName);
