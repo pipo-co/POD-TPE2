@@ -1,9 +1,12 @@
 package ar.edu.itba.pod.client;
 
-import static ar.edu.itba.pod.client.Queries.IN_DELIM;
+import static ar.edu.itba.pod.client.QueryUtils.IN_DELIM;
 import static java.util.Objects.requireNonNull;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -136,8 +139,10 @@ public final class Client {
 
         logger.info("Executing query " + queryCount);
 
-        try(final var treeLines = Files.lines(treeCsv, charset);
-            final var hoodLines = Files.lines(hoodCsv, charset)) {
+        try(final Stream<String> treeLines  = Files.lines(treeCsv, charset);
+            final Stream<String> hoodLines  = Files.lines(hoodCsv, charset);
+            final var queryOutWriter        = new BufferedWriter(new FileWriter(queryOut.toFile(), charset));
+            final var timeOutWriter         = new BufferedWriter(new FileWriter(timeOut.toFile(), charset))) {
             getQuery(queryCount).execute(
                 hazelcast,
                 treeLines
@@ -148,8 +153,8 @@ public final class Client {
                     .skip(1)
                     .map(line -> line.split(IN_DELIM))
                     .map(values -> DataSources.valueOf(city).neighbourhoodFromCSV(values)),
-                queryOut,
-                timeOut
+                queryOutWriter,
+                timeOutWriter
             );
         }
 
@@ -174,7 +179,7 @@ public final class Client {
         public void execute(
             final HazelcastInstance hazelcast,
             final Stream<Tree> trees, final Stream<Neighbourhood> hoods,
-            final Path queryOut, final Path timeOut) throws IOException, ExecutionException, InterruptedException {
+            final Writer queryOut, final Writer timeOut) throws IOException, ExecutionException, InterruptedException {
             query.execute(hazelcast, trees, hoods, queryOut, timeOut);
         }
     }
