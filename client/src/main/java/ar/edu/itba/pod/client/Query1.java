@@ -14,7 +14,10 @@ import com.hazelcast.core.ICompletableFuture;
 import com.hazelcast.core.MultiMap;
 import com.hazelcast.mapreduce.Job;
 import com.hazelcast.mapreduce.KeyValueSource;
-
+import ar.edu.itba.pod.query1.NeighbourhoodPresentPredicate;
+import ar.edu.itba.pod.query1.SortCollator;
+import ar.edu.itba.pod.query1.TreeCountMapper;
+import ar.edu.itba.pod.query1.UselessReducerFactory;
 import ar.edu.itba.pod.models.Neighbourhood;
 import ar.edu.itba.pod.models.Tree;
 
@@ -38,14 +41,12 @@ public final class Query1 {
             .newJob(KeyValueSource.fromMultiMap(treeMap))
             ;
 
-//        final ICompletableFuture<Map<String, Long>> future = job
-//            .mapper( new TokenizerMapper() )
-//            .combiner( new WordCountCombinerFactory() )
-//            .reducer( new WordCountReducerFactory() )
-//            .submit();
-//
-//        future.andThen( buildCallback() );
-//
-//        Map<String, Long> result = future.get();
+        final ICompletableFuture<Long> future = job
+            .keyPredicate(new NeighbourhoodPresentPredicate())
+            .mapper(new TreeCountMapper())
+            .reducer(new UselessReducerFactory())
+            .submit(new SortCollator());
+
+        final Map<String, Long> result = future.get();
     }
 }
