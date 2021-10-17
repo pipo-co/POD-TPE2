@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -39,8 +40,9 @@ public final class Query2 {
         .toString()
         ;
 
-    // Exactamente 2 decimales truncando
-    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.00");
+    // Exactamente 2 decimales truncando. El primero es un 0 y no # para que nunca arranque con . (ej, .27)
+    // Cableamos Locale para que no sea system dependant
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.00", DecimalFormatSymbols.getInstance(OUTPUT_LOCALE));
     static {
         DECIMAL_FORMAT.setRoundingMode(RoundingMode.DOWN);
     }

@@ -22,17 +22,19 @@ public final class QueryUtils {
     public static final String OUT_DELIM    = ";";
     public static final String NEW_LINE     = System.lineSeparator();
 
+    /** Constantes para centralizar locale de la salida, y que no sea system dependant */
+    public static final Locale OUTPUT_LOCALE    = Locale.ROOT;
+    public static final ZoneId OUTPUT_ZONE_ID   = ZoneId.of("UTC");
+
     public static StringJoiner csvHeaderJoiner() {
         return new StringJoiner(OUT_DELIM, "", NEW_LINE);
     }
 
-    public static final String TIMESTAMP_PATTERN                = "dd/MM/yyyy HH:mm:ss:SSSS";
-    public static final Locale TIMESTAMP_LOCALE                 = Locale.ROOT;
-    public static final ZoneId TIMESTAMP_ZONE                   = ZoneId.of("UTC");
-    public static final DateTimeFormatter TIMESTAMP_FORMATTER   = DateTimeFormatter
+    public static final String              TIMESTAMP_PATTERN     = "dd/MM/yyyy HH:mm:ss:SSSS";
+    public static final DateTimeFormatter   TIMESTAMP_FORMATTER   = DateTimeFormatter
         .ofPattern  (TIMESTAMP_PATTERN)
-        .withLocale (TIMESTAMP_LOCALE)
-        .withZone   (TIMESTAMP_ZONE)
+        .withLocale (OUTPUT_LOCALE)
+        .withZone   (OUTPUT_ZONE_ID)
         ;
 
     public static String getCurrentTimestamp() {
