@@ -5,7 +5,6 @@ import ar.edu.itba.pod.models.Tree;
 import com.hazelcast.mapreduce.Context;
 import com.hazelcast.mapreduce.Mapper;
 
-
 public class Q1Mapper implements Mapper<String, Tree, String, Integer> {
 
     @Override

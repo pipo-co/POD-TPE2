@@ -11,6 +11,7 @@ import com.hazelcast.config.GroupConfig;
 import com.hazelcast.config.InterfacesConfig;
 import com.hazelcast.config.JoinConfig;
 import com.hazelcast.config.ManagementCenterConfig;
+import com.hazelcast.config.MultiMapConfig;
 import com.hazelcast.config.MulticastConfig;
 import com.hazelcast.config.NetworkConfig;
 import com.hazelcast.config.TcpIpConfig;
@@ -84,6 +85,9 @@ public class Server {
             .setManagementCenterConfig(new ManagementCenterConfig()
                 .setUrl     (mgmtCenterUrl)
                 .setEnabled (enableMgmtCenter)
+            )
+            .addMultiMapConfig(new MultiMapConfig("default")
+                .setValueCollectionType(MultiMapConfig.ValueCollectionType.LIST)
             )
         );
     }
