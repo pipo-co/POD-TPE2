@@ -6,19 +6,24 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.StringJoiner;
 
 public final class QueryUtils {
     private QueryUtils() {
         // static
     }
 
+    public static final String COLLECTIONS_PREFIX = "g16-";
+    public static String hazelcastNamespace(final String name) {
+        return COLLECTIONS_PREFIX + name;
+    }
+
     public static final String IN_DELIM     = ";";
     public static final String OUT_DELIM    = ";";
     public static final String NEW_LINE     = System.lineSeparator();
 
-    public static final String COLLECTIONS_PREFIX = "g16-";
-    public static String hazelcastNamespace(final String name) {
-        return COLLECTIONS_PREFIX + name;
+    public static StringJoiner csvHeaderJoiner() {
+        return new StringJoiner(OUT_DELIM, "", NEW_LINE);
     }
 
     public static final String TIMESTAMP_PATTERN                = "dd/MM/yyyy HH:mm:ss:SSSS";

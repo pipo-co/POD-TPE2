@@ -30,6 +30,12 @@ public final class Query1 {
         // static
     }
 
+    private static final String CSV_HEADER = csvHeaderJoiner()
+        .add("NEIGHBOURHOOD")
+        .add("TREES")
+        .toString()
+        ;
+
     private static void writeAnswerToCsv(final Writer writer, final Q1Answer answer) throws IOException {
         writer.write(answer.getHood());
         writer.write(OUT_DELIM);
@@ -73,6 +79,7 @@ public final class Query1 {
 
         final List<Q1Answer> answers = future.get();
 
+        queryOut.write(CSV_HEADER);
         for(final Q1Answer answer : answers) {
             writeAnswerToCsv(queryOut, answer);
         }
