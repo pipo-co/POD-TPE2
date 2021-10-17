@@ -14,12 +14,14 @@ import com.hazelcast.core.ICompletableFuture;
 import com.hazelcast.core.MultiMap;
 import com.hazelcast.mapreduce.Job;
 import com.hazelcast.mapreduce.KeyValueSource;
+
+import ar.edu.itba.pod.HazelcastCollectionExtractor;
 import ar.edu.itba.pod.query1.Q1Answer;
 import ar.edu.itba.pod.CountCombinerFactory;
 import ar.edu.itba.pod.SortCollator;
 import ar.edu.itba.pod.query1.Q1Mapper;
 import ar.edu.itba.pod.CountReducerFactory;
-import ar.edu.itba.pod.SetContainsKeyPredicate;
+import ar.edu.itba.pod.CollectionContainsKeyPredicate;
 import ar.edu.itba.pod.models.Neighbourhood;
 import ar.edu.itba.pod.models.Tree;
 
@@ -62,7 +64,7 @@ public final class Query1 {
         logMapReduceJobStart(timeOut);
 
         final ICompletableFuture<List<Q1Answer>> future = job
-            .keyPredicate   (new SetContainsKeyPredicate<>(hoodsNameSetName))
+            .keyPredicate   (new CollectionContainsKeyPredicate<>(hoodsNameSetName, HazelcastCollectionExtractor.SET))
             .mapper         (new Q1Mapper())
             .combiner       (new CountCombinerFactory())
             .reducer        (new CountReducerFactory())

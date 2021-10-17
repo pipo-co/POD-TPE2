@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Stream;
 
@@ -16,6 +15,8 @@ import com.hazelcast.core.MultiMap;
 import com.hazelcast.mapreduce.Job;
 import com.hazelcast.mapreduce.KeyValueSource;
 
+import ar.edu.itba.pod.CollectionContainsKeyPredicate;
+import ar.edu.itba.pod.HazelcastCollectionExtractor;
 import ar.edu.itba.pod.SortCollator;
 import ar.edu.itba.pod.models.Neighbourhood;
 import ar.edu.itba.pod.models.Tree;
@@ -23,10 +24,8 @@ import ar.edu.itba.pod.query2.Q2Answer;
 import ar.edu.itba.pod.query2.Q2CombinerFactory;
 import ar.edu.itba.pod.query2.Q2Mapper;
 import ar.edu.itba.pod.query2.Q2ReducerFactory;
-import ar.edu.itba.pod.SetContainsKeyPredicate;
 
 public final class Query2 {
-
     private Query2() {
         // static
     }
@@ -75,7 +74,7 @@ public final class Query2 {
         logMapReduceJobStart(timeOut);
 
         final ICompletableFuture<List<Q2Answer>> future = job
-            .keyPredicate   (new SetContainsKeyPredicate<>(hoodsNameSetName))
+            .keyPredicate   (new CollectionContainsKeyPredicate<>(hoodMapName, HazelcastCollectionExtractor.MAP_KEYS))
             .mapper         (new Q2Mapper(hoodMapName))
             .combiner       (new Q2CombinerFactory())
             .reducer        (new Q2ReducerFactory())
