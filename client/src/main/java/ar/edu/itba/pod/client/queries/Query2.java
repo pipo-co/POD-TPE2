@@ -4,6 +4,8 @@ import static ar.edu.itba.pod.client.QueryUtils.*;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -37,12 +39,18 @@ public final class Query2 {
         .toString()
         ;
 
+    // Exactamente 2 decimales truncando
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.00");
+    static {
+        DECIMAL_FORMAT.setRoundingMode(RoundingMode.DOWN);
+    }
+
     private static void writeAnswerToCsv(final Writer writer, final Q2Answer answer) throws IOException {
         writer.write(answer.getHoodName());
         writer.write(OUT_DELIM);
         writer.write(answer.getTreeName());
         writer.write(OUT_DELIM);
-        writer.write(Double.toString(answer.getTreesPerInhabitant()));
+        writer.write(DECIMAL_FORMAT.format(answer.getTreesPerInhabitant()));
         writer.write(NEW_LINE);
     }
 

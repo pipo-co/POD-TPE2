@@ -1,7 +1,6 @@
 package ar.edu.itba.pod.query2;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.Comparator;
 import java.util.Map;
 
@@ -18,26 +17,24 @@ public class Q2Answer implements DataSerializable, Comparable<Q2Answer> {
 
     private static final Comparator<Q2Answer> NATURAL_ORDER = Comparator.comparing(Q2Answer::getHoodName);
 
-    private String    hoodName;
-    private long      hoodInhabitants;
-    private String    treeName;
-    private double    treesPerInhabitant;
+    private String hoodName;
+    private String treeName;
+    private double treesPerInhabitant;
 
     private Q2Answer() {
         // Serialization
     }
 
-    public Q2Answer(final Neighbourhood hood) {
-        hoodName = hood.getName();
-        hoodInhabitants = hood.getPopulation();
+    public Q2Answer(final Neighbourhood hood, final String treeName, final long totalTrees) {
+        this.hoodName            = hood.getName();
+        this.treeName            = treeName;
+        this.treesPerInhabitant  = (double) totalTrees / hood.getPopulation();
     }
-    
 
     @Override
     public int compareTo(final Q2Answer o) {
         return NATURAL_ORDER.compare(this, o);
     }
-    
 
     @Override
     public String toString() {
@@ -53,15 +50,13 @@ public class Q2Answer implements DataSerializable, Comparable<Q2Answer> {
         hoodName            = input.readUTF();
         treeName            = input.readUTF();
         treesPerInhabitant  = input.readDouble();
-        
     }
 
     @Override
     public void writeData(ObjectDataOutput output) throws IOException {
-        output.writeUTF(hoodName);
-        output.writeUTF(treeName);
-        output.writeDouble(treesPerInhabitant);
-        
+        output.writeUTF     (hoodName);
+        output.writeUTF     (treeName);
+        output.writeDouble  (treesPerInhabitant);
     }
 
     public String getHoodName() {
