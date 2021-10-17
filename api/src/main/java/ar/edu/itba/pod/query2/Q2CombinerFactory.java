@@ -11,7 +11,7 @@ import ar.edu.itba.pod.models.Neighbourhood;
 public class Q2CombinerFactory implements CombinerFactory<Neighbourhood, String, Map<String, Long>> {
 
     @Override
-    public Combiner<String, Map<String, Long>> newCombiner(Neighbourhood hood) {
+    public Combiner<String, Map<String, Long>> newCombiner(final Neighbourhood hood) {
         return new Q2Combiner();
     }
     
@@ -25,9 +25,9 @@ public class Q2CombinerFactory implements CombinerFactory<Neighbourhood, String,
         }
 
         @Override
-        public void combine(String treeName) {
-            treesCountMap.put(treeName, treesCountMap.containsKey(treeName) ? treesCountMap.get(treeName) + 1 : 1);
-            
+        public void combine(final String treeName) {
+            final Long currentCount = treesCountMap.get(treeName);
+            treesCountMap.put(treeName, currentCount == null ? 1 : currentCount + 1);
         }
 
         @Override
