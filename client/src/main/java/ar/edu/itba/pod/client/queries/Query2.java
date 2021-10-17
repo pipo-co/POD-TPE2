@@ -63,7 +63,7 @@ public final class Query2 {
         treeMap.clear();
 
         final String hoodMapName = hazelcastNamespace("q2-hood-map");
-        final Map<String, Neighbourhood> hoodMap = hazelcast.getMap(hazelcastNamespace(hoodMapName));
+        final Map<String, Neighbourhood> hoodMap = hazelcast.getMap(hoodMapName);
         hoodMap.clear();
 
         logInputProcessingStart(timeOut);
