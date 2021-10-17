@@ -41,16 +41,16 @@ public final class Query1 {
         final Writer queryOut, final Writer timeOut) throws IOException, ExecutionException, InterruptedException {
 
         final MultiMap<String, Tree> treeMap = hazelcast.getMultiMap(hazelcastNamespace("q1-tree-map"));
+        treeMap.clear();
 
         final String hoodsNameSetName = hazelcastNamespace("q1-hoods-name-set");
         final Set<String> hoodsName = hazelcast.getSet(hoodsNameSetName);
+        hoodsName.clear();
 
         logInputProcessingStart(timeOut);
 
         trees.forEach(tree -> treeMap.put(tree.getHoodName(), tree));
-        hoods.map   (Neighbourhood::getName)
-            .forEach(hoodsName::add)
-            ;
+        hoods.map(Neighbourhood::getName).forEach(hoodsName::add);
 
         logInputProcessingEnd(timeOut);
 
@@ -76,5 +76,9 @@ public final class Query1 {
         }
 
         logMapReduceJobEnd(timeOut);
+
+        // Limpiamos recursos usados
+        treeMap.clear();
+        hoodsName.clear();
     }
 }
