@@ -62,24 +62,16 @@ public final class Query2 {
         final MultiMap<String, Tree> treeMap = hazelcast.getMultiMap(hazelcastNamespace("q2-tree-map"));
         treeMap.clear();
 
-        final String hoodMapName = hazelcastNamespace("q2-neighbourhood-map");
+        final String hoodMapName = hazelcastNamespace("q2-hood-map");
         final Map<String, Neighbourhood> hoodMap = hazelcast.getMap(hazelcastNamespace(hoodMapName));
         hoodMap.clear();
-
-        final String hoodsNameSetName = hazelcastNamespace("q2-hoods-name-set");
-        Set<String> hoodsName = hazelcast.getSet(hoodsNameSetName);
-        hoodsName.clear();
 
         logInputProcessingStart(timeOut);
 
         trees.forEach(tree -> treeMap.put(tree.getHoodName(), tree));
-
         hoods.forEach(hood -> hoodMap.put(hood.getName(), hood));
 
-        hoodsName = hoodMap.keySet();
-
         logInputProcessingEnd(timeOut);
-        
 
         final Job<String, Tree> job = hazelcast
             .getJobTracker(hazelcastNamespace("q2-job-tracker"))
@@ -107,7 +99,6 @@ public final class Query2 {
     
             // Limpiamos recursos usados
             treeMap.clear();
-            hoodsName.clear();
             hoodMap.clear();
     }
 }
