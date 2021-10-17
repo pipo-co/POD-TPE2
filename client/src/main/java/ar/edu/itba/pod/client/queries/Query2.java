@@ -1,9 +1,9 @@
-package ar.edu.itba.pod.client;
+package ar.edu.itba.pod.client.queries;
 
-import static ar.edu.itba.pod.client.Queries.hazelcastNamespace;
+import static ar.edu.itba.pod.client.QueryUtils.*;
 
 import java.io.IOException;
-import java.nio.file.Path;
+import java.io.Writer;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,15 +31,25 @@ public final class Query2 {
         // static
     }
 
-    public static void execute(final HazelcastInstance hazelcast, final Stream<Tree> trees,
-            final Stream<Neighbourhood> hoods, final Path queryOut, final Path timeOut)
-            throws IOException, ExecutionException, InterruptedException {
+    private static void writeAnswerToCsv(final Writer writer, final Q2Answer answer) throws IOException {
+        writer.write(answer.getHoodName());
+        writer.write(OUT_DELIM);
+        writer.write(answer.getTreeName());
+        writer.write(OUT_DELIM);
+        writer.write(Double.toString(answer.getTreesPerInhabitant()));
+        writer.write(NEW_LINE);
+    }
+
+    public static void execute(
+        final HazelcastInstance hazelcast,
+        final Stream<Tree> trees, final Stream<Neighbourhood> hoods,
+        final Writer queryOut, final Writer timeOut) throws IOException, ExecutionException, InterruptedException {
 
         final MultiMap<String, Tree> treeMap = hazelcast.getMultiMap(hazelcastNamespace("q2-tree-map"));
         treeMap.clear();
 
-        final String hoodMap = hazelcastNamespace("q2-neighbourhood-map");
-        final Map<String, Neighbourhood> neighbourhoodMap = hazelcast.getMap(hazelcastNamespace(hoodMap));
+        final String hoodMapName = hazelcastNamespace("q2-neighbourhood-map");
+        final Map<String, Neighbourhood> hoodMap = hazelcast.getMap(hazelcastNamespace(hoodMapName));
         hoodMap.clear();
 
         final String hoodsNameSetName = hazelcastNamespace("q2-hoods-name-set");
@@ -50,9 +60,9 @@ public final class Query2 {
 
         trees.forEach(tree -> treeMap.put(tree.getHoodName(), tree));
 
-        hoods.forEach(hood -> neighbourhoodMap.put(hood.getName(), hood));
+        hoods.forEach(hood -> hoodMap.put(hood.getName(), hood));
 
-        hoodsName = neighbourhoodMap.keySet();
+        hoodsName = hoodMap.keySet();
 
         logInputProcessingEnd(timeOut);
         
@@ -66,13 +76,13 @@ public final class Query2 {
 
         final ICompletableFuture<List<Q2Answer>> future = job
             .keyPredicate   (new SetContainsKeyPredicate<>(hoodsNameSetName))
-            .mapper         (new Q2Mapper(hoodMap))
+            .mapper         (new Q2Mapper(hoodMapName))
             .combiner       (new Q2CombinerFactory())
             .reducer        (new Q2ReducerFactory())
             .submit         (new SortCollator<>(Map.Entry::getValue))
             ;
         
-            final List<Q2Answer> result = future.get();
+            final List<Q2Answer> answers = future.get();
 
             for(final Q2Answer answer : answers) {
                 writeAnswerToCsv(queryOut, answer);

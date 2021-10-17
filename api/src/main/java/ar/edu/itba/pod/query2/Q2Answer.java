@@ -66,6 +66,12 @@ public class Q2Answer implements Comparable<Q2Answer>, DataSerializable {
     public String getHoodName() {
         return hoodName;
     }
+    public String getTreeName() {
+        return treeName;
+    }
+    public double getTreesPerInhabitant() {
+        return treesPerInhabitant;
+    }
 
     public void setTreeParams(final Map.Entry<String, Long> bestTree) {
         treeName = bestTree.getKey();

@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ar.edu.itba.pod.client.queries.Query1;
+import ar.edu.itba.pod.client.queries.Query2;
 import ar.edu.itba.pod.models.DataSources;
 import ar.edu.itba.pod.models.Neighbourhood;
 import ar.edu.itba.pod.models.Tree;
