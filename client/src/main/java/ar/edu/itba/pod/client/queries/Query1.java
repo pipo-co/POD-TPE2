@@ -1,4 +1,4 @@
-package ar.edu.itba.pod.client;
+package ar.edu.itba.pod.client.queries;
 
 import static ar.edu.itba.pod.client.QueryUtils.*;
 
