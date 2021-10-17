@@ -66,7 +66,7 @@ public final class Query1 {
             .mapper         (new Q1Mapper())
             .combiner       (new CountCombinerFactory())
             .reducer        (new CountReducerFactory())
-            .submit         (new SortCollator<>(Q1Answer::fromEntry))
+            .submit         (new SortCollator<>(Q1Answer.FROM_ENTRY_MAPPER))
             ;
 
         final List<Q1Answer> answers = future.get();

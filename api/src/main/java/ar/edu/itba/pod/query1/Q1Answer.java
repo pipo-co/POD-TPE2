@@ -8,7 +8,11 @@ import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.nio.serialization.DataSerializable;
 
-public class Q1Answer implements Comparable<Q1Answer>, DataSerializable {
+import ar.edu.itba.pod.SortCollator;
+
+public class Q1Answer implements DataSerializable, Comparable<Q1Answer> {
+
+    public static final EntryToAnswerMapper FROM_ENTRY_MAPPER = new EntryToAnswerMapper();
 
     private static final Comparator<Q1Answer> NATURAL_ORDER = Comparator
         .comparingInt   (Q1Answer::getTreeCount).reversed()
@@ -61,5 +65,12 @@ public class Q1Answer implements Comparable<Q1Answer>, DataSerializable {
     }
     public int getTreeCount() {
         return treeCount;
+    }
+
+    private static class EntryToAnswerMapper implements SortCollator.EntryToSortableMapper<String, Integer, Q1Answer> {
+        @Override
+        public Q1Answer toSortable(final Map.Entry<String, Integer> entry) {
+            return Q1Answer.fromEntry(entry);
+        }
     }
 }

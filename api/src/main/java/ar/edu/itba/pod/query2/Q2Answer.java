@@ -9,13 +9,14 @@ import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.nio.serialization.DataSerializable;
 
+import ar.edu.itba.pod.SortCollator;
 import ar.edu.itba.pod.models.Neighbourhood;
 
-public class Q2Answer implements Comparable<Q2Answer>, DataSerializable {
+public class Q2Answer implements DataSerializable, Comparable<Q2Answer> {
 
-    private static final Comparator<Q2Answer> NATURAL_ORDER = Comparator
-        .comparing   (Q2Answer::getHoodName)
-        ;
+    public static final EntryToAnswerMapper FROM_ENTRY_MAPPER = new EntryToAnswerMapper();
+
+    private static final Comparator<Q2Answer> NATURAL_ORDER = Comparator.comparing(Q2Answer::getHoodName);
 
     private String    hoodName;
     private long      hoodInhabitants;
@@ -33,7 +34,7 @@ public class Q2Answer implements Comparable<Q2Answer>, DataSerializable {
     
 
     @Override
-    public int compareTo(Q2Answer o) {
+    public int compareTo(final Q2Answer o) {
         return NATURAL_ORDER.compare(this, o);
     }
     
@@ -73,9 +74,10 @@ public class Q2Answer implements Comparable<Q2Answer>, DataSerializable {
         return treesPerInhabitant;
     }
 
-    public void setTreeParams(final Map.Entry<String, Long> bestTree) {
-        treeName = bestTree.getKey();
-        //Piden que usemos solo dos decimales
-        treesPerInhabitant = Double.parseDouble(new DecimalFormat("##.##").format(bestTree.getValue() / hoodInhabitants));
+    private static class EntryToAnswerMapper implements SortCollator.EntryToSortableMapper<Neighbourhood, Q2Answer, Q2Answer> {
+        @Override
+        public Q2Answer toSortable(final Map.Entry<Neighbourhood, Q2Answer> entry) {
+            return entry.getValue();
+        }
     }
 }

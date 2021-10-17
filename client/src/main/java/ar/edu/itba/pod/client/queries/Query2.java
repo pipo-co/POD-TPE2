@@ -79,7 +79,7 @@ public final class Query2 {
             .mapper         (new Q2Mapper(hoodMapName))
             .combiner       (new Q2CombinerFactory())
             .reducer        (new Q2ReducerFactory())
-            .submit         (new SortCollator<>(Map.Entry::getValue))
+            .submit         (new SortCollator<>(Q2Answer.FROM_ENTRY_MAPPER))
             ;
         
             final List<Q2Answer> answers = future.get();
