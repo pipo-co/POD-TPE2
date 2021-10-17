@@ -19,11 +19,11 @@ import com.hazelcast.mapreduce.KeyValueSource;
 import ar.edu.itba.pod.SortCollator;
 import ar.edu.itba.pod.models.Neighbourhood;
 import ar.edu.itba.pod.models.Tree;
-import ar.edu.itba.pod.query1.SetContainsKeyPredicate;
 import ar.edu.itba.pod.query2.Q2Answer;
 import ar.edu.itba.pod.query2.Q2CombinerFactory;
 import ar.edu.itba.pod.query2.Q2Mapper;
 import ar.edu.itba.pod.query2.Q2ReducerFactory;
+import ar.edu.itba.pod.SetContainsKeyPredicate;
 
 public final class Query2 {
 
@@ -36,21 +36,33 @@ public final class Query2 {
             throws IOException, ExecutionException, InterruptedException {
 
         final MultiMap<String, Tree> treeMap = hazelcast.getMultiMap(hazelcastNamespace("q2-tree-map"));
-        trees.forEach(tree -> treeMap.put(tree.getHoodName(), tree));
+        treeMap.clear();
 
-        final String hoodsNameSetName = hazelcastNamespace("q2-hoods-name-set");
-        final Set<String> hoodsName = hazelcast.getSet(hoodsNameSetName);
-        hoods.map(Neighbourhood::getName).forEach(hoodsName::add);
-        
         final String hoodMap = hazelcastNamespace("q2-neighbourhood-map");
         final Map<String, Neighbourhood> neighbourhoodMap = hazelcast.getMap(hazelcastNamespace(hoodMap));
+        hoodMap.clear();
+
+        final String hoodsNameSetName = hazelcastNamespace("q2-hoods-name-set");
+        Set<String> hoodsName = hazelcast.getSet(hoodsNameSetName);
+        hoodsName.clear();
+
+        logInputProcessingStart(timeOut);
+
+        trees.forEach(tree -> treeMap.put(tree.getHoodName(), tree));
+
         hoods.forEach(hood -> neighbourhoodMap.put(hood.getName(), hood));
 
+        hoodsName = neighbourhoodMap.keySet();
+
+        logInputProcessingEnd(timeOut);
+        
 
         final Job<String, Tree> job = hazelcast
             .getJobTracker(hazelcastNamespace("q2-job-tracker"))
             .newJob(KeyValueSource.fromMultiMap(treeMap))
             ;
+
+        logMapReduceJobStart(timeOut);
 
         final ICompletableFuture<List<Q2Answer>> future = job
             .keyPredicate   (new SetContainsKeyPredicate<>(hoodsNameSetName))
@@ -62,6 +74,15 @@ public final class Query2 {
         
             final List<Q2Answer> result = future.get();
 
-            System.out.println(result);
+            for(final Q2Answer answer : answers) {
+                writeAnswerToCsv(queryOut, answer);
+            }
+    
+            logMapReduceJobEnd(timeOut);
+    
+            // Limpiamos recursos usados
+            treeMap.clear();
+            hoodsName.clear();
+            hoodMap.clear();
     }
 }

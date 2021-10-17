@@ -42,7 +42,5 @@ public class Q2ReducerFactory implements ReducerFactory<Neighbourhood, Map<Strin
                 treesCountMap.containsKey(key) ? treesCountMap.get(key) + value : value));
         }
             
-
-
     }
 }
