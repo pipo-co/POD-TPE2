@@ -58,6 +58,15 @@ public class Query3 {
             final Stream<Tree> trees, final Stream<Neighbourhood> hoods,
             final Writer queryOut, final Writer timeOut) throws IOException, ExecutionException, InterruptedException {
 
+        final String nHoodsStr = System.getProperty("n");
+        final int nHoods;
+        if (nHoodsStr == null) {
+            throw new IOException();
+        }
+        else {
+            nHoods = Integer.valueOf(nHoodsStr);
+        }
+        
         final MultiMap<String, Tree> treeMap = hazelcast.getMultiMap(hazelcastNamespace("q3-tree-map"));
         treeMap.clear();
 
@@ -89,11 +98,14 @@ public class Query3 {
     
         final List<Q3Answer> answers = future.get();
 
-        queryOut.write(CSV_HEADER);
-        for(final Q3Answer answer : answers) {
-            writeAnswerToCsv(queryOut, answer);
-        }
+        final int total = answers.size() > nHoods ? nHoods: answers.size();
 
+        queryOut.write(CSV_HEADER);
+
+        for (int i = 0; i < total; i++) {
+            writeAnswerToCsv(queryOut, answers.get(i));    
+        }
+        
         logMapReduceJobEnd(timeOut);
 
         // Limpiamos recursos usados

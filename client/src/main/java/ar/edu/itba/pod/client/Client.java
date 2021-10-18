@@ -47,7 +47,7 @@ public final class Client {
     public static final String PROPERTY_CHARSET     = "charset";
     public static final String PROPERTY_GROUP_NAME  = "name";
     public static final String PROPERTY_GROUP_PASS  = "pass";
-    public static final String PROPERTY_ADDRESSES   = "addresses";
+    public static final String PROPERTY_ADDRESSES   = "addresses";  
 
     public static final String DEFAULT_IN_PATH    = ".";
     public static final String DEFAULT_OUT_PATH   = ".";
@@ -123,7 +123,7 @@ public final class Client {
         final String        groupPass   = System.getProperty(PROPERTY_GROUP_PASS, DEFAULT_GROUP_PASS);
         final List<String>  addresses   = parseAddresses(System.getProperty(PROPERTY_ADDRESSES));
         final String        inPath      = System.getProperty(PROPERTY_IN_PATH, DEFAULT_IN_PATH);
-        final String        outPath     = System.getProperty(PROPERTY_OUT_PATH, DEFAULT_OUT_PATH);
+        final String        outPath     = System.getProperty(PROPERTY_OUT_PATH, DEFAULT_OUT_PATH);   
 
         final Path treeCsv  = treeFilePath  (inPath,  city);
         final Path hoodCsv  = hoodFilePath  (inPath,  city);
