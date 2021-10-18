@@ -1,4 +1,4 @@
-package ar.edu.itba.pod.query3;
+package ar.edu.itba.pod;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -6,7 +6,7 @@ import java.util.Set;
 import com.hazelcast.mapreduce.Combiner;
 import com.hazelcast.mapreduce.CombinerFactory;
 
-public class Q3CombinerFactory implements CombinerFactory<String, String, Set<String>> {
+public class DifferentSpeciesCombinerFactory implements CombinerFactory<String, String, Set<String>> {
 
     @Override
     public Combiner<String, Set<String>> newCombiner(String hoodName) {
