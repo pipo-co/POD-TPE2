@@ -93,17 +93,17 @@ public final class Query2 {
             .submit         (new SortCollator<>(Map.Entry::getValue, ANSWER_ORDER))
             ;
         
-            final List<Q2Answer> answers = future.get();
+        final List<Q2Answer> answers = future.get();
 
-            queryOut.write(CSV_HEADER);
-            for(final Q2Answer answer : answers) {
-                writeAnswerToCsv(queryOut, answer);
-            }
-    
-            logMapReduceJobEnd(timeOut);
-    
-            // Limpiamos recursos usados
-            treeMap.clear();
-            hoodMap.clear();
+        queryOut.write(CSV_HEADER);
+        for(final Q2Answer answer : answers) {
+            writeAnswerToCsv(queryOut, answer);
+        }
+
+        logMapReduceJobEnd(timeOut);
+
+        // Limpiamos recursos usados
+        treeMap.clear();
+        hoodMap.clear();
     }
 }
