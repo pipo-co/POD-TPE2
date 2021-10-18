@@ -29,13 +29,13 @@ public class Q3Answer implements DataSerializable {
     }
 
     @Override
-    public void readData(ObjectDataInput input) throws IOException {
+    public void readData(final ObjectDataInput input) throws IOException {
         hoodName            = input.readUTF();
         differentSpecies    = input.readInt();        
     }
 
     @Override
-    public void writeData(ObjectDataOutput output) throws IOException {
+    public void writeData(final ObjectDataOutput output) throws IOException {
         output.writeUTF(hoodName);
         output.writeInt(differentSpecies);        
     }

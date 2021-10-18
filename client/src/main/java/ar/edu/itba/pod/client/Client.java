@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import ar.edu.itba.pod.client.queries.Query1;
 import ar.edu.itba.pod.client.queries.Query2;
 import ar.edu.itba.pod.client.queries.Query3;
+import ar.edu.itba.pod.client.queries.Query4;
 import ar.edu.itba.pod.models.CityCSVDatasource;
 import ar.edu.itba.pod.models.Neighbourhood;
 import ar.edu.itba.pod.models.Tree;
@@ -172,6 +173,7 @@ public final class Client {
         Q1(Query1::execute),
         Q2(Query2::execute),
         Q3(Query3::execute),
+        Q4(Query4::execute),
         ;
 
         public static final List<QueryEnum> VALUES  = Arrays.asList(values());

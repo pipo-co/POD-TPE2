@@ -23,13 +23,13 @@ import com.hazelcast.mapreduce.KeyValueSource;
 
 import ar.edu.itba.pod.CollectionContainsKeyPredicate;
 import ar.edu.itba.pod.DifferentSpeciesCombinerFactory;
+import ar.edu.itba.pod.DifferentSpeciesReducerFactory;
 import ar.edu.itba.pod.HazelcastCollectionExtractor;
 import ar.edu.itba.pod.HoodTreesMapper;
 import ar.edu.itba.pod.SortCollator;
 import ar.edu.itba.pod.models.Neighbourhood;
 import ar.edu.itba.pod.models.Tree;
 import ar.edu.itba.pod.query3.Q3Answer;
-import ar.edu.itba.pod.query3.Q3ReducerFactory;
 
 public class Query3 {
 
@@ -92,7 +92,7 @@ public class Query3 {
             .keyPredicate   (new CollectionContainsKeyPredicate<>(hoodsNameSetName, HazelcastCollectionExtractor.SET))
             .mapper         (new HoodTreesMapper())
             .combiner       (new DifferentSpeciesCombinerFactory())
-            .reducer        (new Q3ReducerFactory())
+            .reducer        (new DifferentSpeciesReducerFactory())
             .submit         (new SortCollator<>(Map.Entry::getValue, ANSWER_ORDER))
             ;
     

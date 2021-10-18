@@ -16,6 +16,10 @@ public class Q4Answer implements DataSerializable {
         //static
     }
 
+    public Q4Answer(final int group, final String firstHood, final String secondHood) {
+        this.group = group;
+        setHoods(firstHood, secondHood);
+    }
 
     @Override
     public String toString() {
@@ -27,7 +31,7 @@ public class Q4Answer implements DataSerializable {
     }
 
     @Override
-    public void readData(ObjectDataInput input) throws IOException {
+    public void readData(final ObjectDataInput input) throws IOException {
         group               = input.readInt();  
         hoodA               = input.readUTF();
         hoodB               = input.readUTF();
@@ -35,7 +39,7 @@ public class Q4Answer implements DataSerializable {
     }
 
     @Override
-    public void writeData(ObjectDataOutput output) throws IOException {
+    public void writeData(final ObjectDataOutput output) throws IOException {
         output.writeInt(group);
         output.writeUTF(hoodA);
         output.writeUTF(hoodB);  
@@ -51,6 +55,12 @@ public class Q4Answer implements DataSerializable {
 
     public String getHoodB() {
         return hoodB;
+    }
+
+    private void setHoods(final String firstHood, final String secondHood) {
+        final int compare = firstHood.compareTo(secondHood);
+        hoodA = compare < 0? firstHood : secondHood;
+        hoodB = compare < 0? secondHood : firstHood;
     }
     
 }
