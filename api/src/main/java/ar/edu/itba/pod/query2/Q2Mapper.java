@@ -15,9 +15,10 @@ import ar.edu.itba.pod.models.Tree;
 public class Q2Mapper implements Mapper<String, Tree, Neighbourhood, String>, HazelcastInstanceAware {
 
     // Configuration
-    private final   String                        mapName;
+    private final       String                        mapName;
 
-    private         Map<String, Neighbourhood>    hoodMap;
+    // Transient State
+    private transient   Map<String, Neighbourhood>    hoodMap;
 
     public Q2Mapper(final String mapName) {
         this.mapName = requireNonNull(mapName);

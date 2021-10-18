@@ -10,9 +10,12 @@ import com.hazelcast.mapreduce.KeyPredicate;
 
 public class CollectionContainsKeyPredicate<Key> implements KeyPredicate<Key>, HazelcastInstanceAware {
 
-    private final String                        collectionName;
-    private final HazelcastCollectionExtractor  collectionExtractor;
-    private       Collection<Key>               keyCollection;
+    // Configuration
+    private final       String                        collectionName;
+    private final       HazelcastCollectionExtractor  collectionExtractor;
+
+    // Transient State
+    private transient   Collection<Key>               keyCollection;
 
     public CollectionContainsKeyPredicate(final String collectionName, final HazelcastCollectionExtractor collectionExtractor) {
         this.collectionName         = requireNonNull(collectionName);
