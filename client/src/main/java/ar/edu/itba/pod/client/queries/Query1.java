@@ -4,6 +4,7 @@ import static ar.edu.itba.pod.client.QueryUtils.*;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -29,6 +30,11 @@ public final class Query1 {
     private Query1() {
         // static
     }
+
+    private static final Comparator<Q1Answer> ANSWER_ORDER = Comparator
+        .comparingInt   (Q1Answer::getTreeCount).reversed()
+        .thenComparing  (Q1Answer::getHood)
+        ;
 
     private static final String CSV_HEADER = csvHeaderJoiner()
         .add("NEIGHBOURHOOD")
@@ -74,7 +80,7 @@ public final class Query1 {
             .mapper         (new Q1Mapper())
             .combiner       (new CountCombinerFactory())
             .reducer        (new CountReducerFactory())
-            .submit         (new SortCollator<>(Q1Answer.FROM_ENTRY_MAPPER))
+            .submit         (new SortCollator<>(Q1Answer::fromEntry, ANSWER_ORDER))
             ;
 
         final List<Q1Answer> answers = future.get();

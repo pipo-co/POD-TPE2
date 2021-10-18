@@ -8,7 +8,9 @@ import static ar.edu.itba.pod.client.QueryUtils.logInputProcessingStart;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Stream;
@@ -34,6 +36,8 @@ public class Query3 {
     public Query3() {
         // static
     }
+
+    private static final Comparator<Q3Answer> ANSWER_ORDER = Comparator.comparing(Q3Answer::getDifferentSpecies).reversed();
 
     private static final String CSV_HEADER = csvHeaderJoiner()
         .add("NEIGHBOURHOOD")
@@ -80,7 +84,7 @@ public class Query3 {
             .mapper         (new Q3Mapper())
             .combiner       (new Q3CombinerFactory())
             .reducer        (new Q3ReducerFactory())
-            .submit         (new SortCollator<>(Q3Answer.FROM_ENTRY_MAPPER))   
+            .submit         (new SortCollator<>(Map.Entry::getValue, ANSWER_ORDER))
             ;
     
         final List<Q3Answer> answers = future.get();

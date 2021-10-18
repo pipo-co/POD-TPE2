@@ -7,6 +7,7 @@ import java.io.Writer;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -32,6 +33,8 @@ public final class Query2 {
     private Query2() {
         // static
     }
+
+    private static final Comparator<Q2Answer> ANSWER_ORDER = Comparator.comparing(Q2Answer::getHoodName);
 
     private static final String CSV_HEADER = csvHeaderJoiner()
         .add("NEIGHBOURHOOD")
@@ -87,7 +90,7 @@ public final class Query2 {
             .mapper         (new Q2Mapper(hoodMapName))
             .combiner       (new Q2CombinerFactory())
             .reducer        (new Q2ReducerFactory())
-            .submit         (new SortCollator<>(Q2Answer.FROM_ENTRY_MAPPER))
+            .submit         (new SortCollator<>(Map.Entry::getValue, ANSWER_ORDER))
             ;
         
             final List<Q2Answer> answers = future.get();

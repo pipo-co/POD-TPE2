@@ -1,21 +1,14 @@
 package ar.edu.itba.pod.query2;
 
 import java.io.IOException;
-import java.util.Comparator;
-import java.util.Map;
 
 import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.nio.serialization.DataSerializable;
 
-import ar.edu.itba.pod.SortCollator;
 import ar.edu.itba.pod.models.Neighbourhood;
 
-public class Q2Answer implements DataSerializable, Comparable<Q2Answer> {
-
-    public static final EntryToAnswerMapper FROM_ENTRY_MAPPER = new EntryToAnswerMapper();
-
-    private static final Comparator<Q2Answer> NATURAL_ORDER = Comparator.comparing(Q2Answer::getHoodName);
+public class Q2Answer implements DataSerializable {
 
     private String hoodName;
     private String treeName;
@@ -29,11 +22,6 @@ public class Q2Answer implements DataSerializable, Comparable<Q2Answer> {
         this.hoodName            = hood.getName();
         this.treeName            = treeName;
         this.treesPerInhabitant  = (double) totalTrees / hood.getPopulation();
-    }
-
-    @Override
-    public int compareTo(final Q2Answer o) {
-        return NATURAL_ORDER.compare(this, o);
     }
 
     @Override
@@ -67,12 +55,5 @@ public class Q2Answer implements DataSerializable, Comparable<Q2Answer> {
     }
     public double getTreesPerInhabitant() {
         return treesPerInhabitant;
-    }
-
-    private static class EntryToAnswerMapper implements SortCollator.EntryToSortableMapper<Neighbourhood, Q2Answer, Q2Answer> {
-        @Override
-        public Q2Answer toSortable(final Map.Entry<Neighbourhood, Q2Answer> entry) {
-            return entry.getValue();
-        }
     }
 }
