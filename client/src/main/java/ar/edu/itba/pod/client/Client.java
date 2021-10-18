@@ -130,6 +130,8 @@ public final class Client {
         final Path queryOut = queryOutPath  (outPath, queryCount);
         final Path timeOut  = timeOutPath   (outPath, queryCount);
 
+        final DataSources datasource = DataSources.valueOf(city);
+
         final HazelcastInstance hazelcast =  HazelcastClient.newHazelcastClient(new ClientConfig()
             .setGroupConfig(new GroupConfig()
                 .setName    (groupName)
@@ -140,7 +142,7 @@ public final class Client {
             )
         );
 
-        logger.info("Executing query " + queryCount);
+        logger.info("Executing Query " + queryCount);
 
         try(final Stream<String> treeLines  = Files.lines(treeCsv, charset);
             final Stream<String> hoodLines  = Files.lines(hoodCsv, charset);
@@ -151,11 +153,11 @@ public final class Client {
                 treeLines
                     .skip(1)
                     .map(line -> line.split(IN_DELIM))
-                    .map(values -> DataSources.valueOf(city).treeFromCSV(values)),
+                    .map(datasource::treeFromCSV),
                 hoodLines
                     .skip(1)
                     .map(line -> line.split(IN_DELIM))
-                    .map(values -> DataSources.valueOf(city).neighbourhoodFromCSV(values)),
+                    .map(datasource::hoodFromCSV),
                 queryOutWriter,
                 timeOutWriter
             );
@@ -163,7 +165,7 @@ public final class Client {
 
         HazelcastClient.shutdownAll();
 
-        logger.info("Client Finished");
+        logger.info("Query " + queryCount + " Finished");
     }
 
     public enum QueryEnum implements Query {
