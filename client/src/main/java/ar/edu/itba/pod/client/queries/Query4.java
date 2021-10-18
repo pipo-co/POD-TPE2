@@ -76,7 +76,7 @@ public class Query4 {
         hoodsName.clear();
 
         final String hoodSpeciesSetName = hazelcastNamespace("q4-hoods-species-set");
-        final ISet<Q3Answer> hoodSpecies = hazelcast.getSet(hoodsNameSetName);
+        final ISet<Q3Answer> hoodSpecies = hazelcast.getSet(hoodSpeciesSetName);
         hoodSpecies.clear();
 
         logInputProcessingStart(timeOut);
