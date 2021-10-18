@@ -1,6 +1,6 @@
 package ar.edu.itba.pod.models;
 
-public enum DataSources {
+public enum CityCSVDatasource {
     BUE {
         @Override
         public Tree treeFromCSV(final String[] csv) {

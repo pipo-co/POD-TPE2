@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 import ar.edu.itba.pod.client.queries.Query1;
 import ar.edu.itba.pod.client.queries.Query2;
 import ar.edu.itba.pod.client.queries.Query3;
-import ar.edu.itba.pod.models.DataSources;
+import ar.edu.itba.pod.models.CityCSVDatasource;
 import ar.edu.itba.pod.models.Neighbourhood;
 import ar.edu.itba.pod.models.Tree;
 
@@ -130,7 +130,7 @@ public final class Client {
         final Path queryOut = queryOutPath  (outPath, queryCount);
         final Path timeOut  = timeOutPath   (outPath, queryCount);
 
-        final DataSources datasource = DataSources.valueOf(city);
+        final CityCSVDatasource datasource = CityCSVDatasource.valueOf(city);
 
         final HazelcastInstance hazelcast =  HazelcastClient.newHazelcastClient(new ClientConfig()
             .setGroupConfig(new GroupConfig()
