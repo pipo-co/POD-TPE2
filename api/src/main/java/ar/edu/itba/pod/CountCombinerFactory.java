@@ -31,7 +31,7 @@ public class CountCombinerFactory implements CombinerFactory<String, Integer, In
 
         @Override
         public void reset() {
-            count = 0;
+            beginCombine();
         }
     }
 }

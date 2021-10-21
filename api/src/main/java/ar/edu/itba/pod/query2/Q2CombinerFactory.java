@@ -37,8 +37,7 @@ public class Q2CombinerFactory implements CombinerFactory<Neighbourhood, String,
 
         @Override
         public void reset() {
-            treesCountMap = new HashMap<>();
+            beginCombine();
         }
-
     }
 }
