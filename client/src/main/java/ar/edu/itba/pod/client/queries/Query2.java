@@ -28,6 +28,7 @@ import ar.edu.itba.pod.query2.Q2Answer;
 import ar.edu.itba.pod.query2.Q2CombinerFactory;
 import ar.edu.itba.pod.query2.Q2Mapper;
 import ar.edu.itba.pod.query2.Q2ReducerFactory;
+import ar.edu.itba.pod.utils.keyPredicates.MapContainsKeyPredicate;
 
 public final class Query2 {
     private Query2() {
@@ -89,7 +90,7 @@ public final class Query2 {
         logMapReduceJobStart(timeOut);
 
         final ICompletableFuture<List<Q2Answer>> future = job
-            .keyPredicate   (new CollectionContainsKeyPredicate<>(HOOD_MAP_NAME, HazelcastCollectionExtractor.MAP_KEYS))
+            .keyPredicate   (new MapContainsKeyPredicate<>(HOOD_MAP_NAME, MapContainsKeyPredicate.MapCollection.KEYS))
             .mapper         (new Q2Mapper(HOOD_MAP_NAME))
             .combiner       (new Q2CombinerFactory())
             .reducer        (new Q2ReducerFactory())
