@@ -20,8 +20,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Stream;
 
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.ICompletableFuture;
-import com.hazelcast.core.ISet;
+import com.hazelcast.core.IList;
 import com.hazelcast.core.MultiMap;
 import com.hazelcast.mapreduce.Job;
 import com.hazelcast.mapreduce.KeyValueSource;
@@ -78,8 +77,8 @@ public class Query4 {
         final Set<String> hoodsName = hazelcast.getSet(hoodsNameSetName);
         hoodsName.clear();
 
-        final String hoodSpeciesSetName = hazelcastNamespace("q4-hoods-species-set");
-        final ISet<Q3Answer> hoodSpecies = hazelcast.getSet(hoodSpeciesSetName);
+        final String hoodSpeciesSetName = hazelcastNamespace("q4-hoods-species-list");
+        final IList<Q3Answer> hoodSpecies = hazelcast.getList(hoodSpeciesSetName);
         hoodSpecies.clear();
 
         logInputProcessingStart(timeOut);
@@ -107,7 +106,7 @@ public class Query4 {
 
         final Job<String, Q3Answer> job2 = hazelcast
             .getJobTracker(hazelcastNamespace("q4-job-2-tracker"))
-            .newJob(KeyValueSource.fromSet(hoodSpecies))
+            .newJob(KeyValueSource.fromList(hoodSpecies))
             ;
 
         final List<Q4Answer> answers = new LinkedList<>();
