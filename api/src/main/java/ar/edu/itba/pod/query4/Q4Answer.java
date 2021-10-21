@@ -1,16 +1,22 @@
 package ar.edu.itba.pod.query4;
 
 import java.io.IOException;
+import java.util.Comparator;
 
 import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.nio.serialization.DataSerializable;
 
-public class Q4Answer implements DataSerializable {
-    
-    private int group;
-    private String hoodA;
-    private String hoodB;
+public class Q4Answer implements DataSerializable, Comparable<Q4Answer> {
+
+    private static final Comparator<Q4Answer> NATURAL_ORDER = Comparator
+        .comparing      (Q4Answer::getHoodA)
+        .thenComparing  (Q4Answer::getHoodB)
+        ;
+
+    private int     group;
+    private String  hoodA;
+    private String  hoodB;
 
     private Q4Answer() {
         // Serialization
@@ -25,12 +31,8 @@ public class Q4Answer implements DataSerializable {
     }
 
     @Override
-    public String toString() {
-        return "Q4Answer{" +
-            "group='" + group + '\'' +
-            ", neighbourhood=" + hoodA +
-            ", neighbourhood=" + hoodB +
-            '}';
+    public int compareTo(final Q4Answer o) {
+        return NATURAL_ORDER.compare(this, o);
     }
 
     @Override
