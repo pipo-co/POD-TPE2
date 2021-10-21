@@ -25,15 +25,6 @@ public class Q2Answer implements DataSerializable {
     }
 
     @Override
-    public String toString() {
-        return "Q2Answer{" +
-            "hood='" + hoodName + '\'' +
-            ", tree=" + treeName + '\'' +
-            ", treesPerInhabitant=" + treesPerInhabitant +
-            '}';
-    }
-
-    @Override
     public void readData(final ObjectDataInput input) throws IOException {
         hoodName            = input.readUTF();
         treeName            = input.readUTF();
@@ -45,6 +36,15 @@ public class Q2Answer implements DataSerializable {
         output.writeUTF     (hoodName);
         output.writeUTF     (treeName);
         output.writeDouble  (treesPerInhabitant);
+    }
+
+    @Override
+    public String toString() {
+        return "Q2Answer{" +
+            "hood='" + hoodName + '\'' +
+            ", tree=" + treeName + '\'' +
+            ", treesPerInhabitant=" + treesPerInhabitant +
+            '}';
     }
 
     public String getHoodName() {

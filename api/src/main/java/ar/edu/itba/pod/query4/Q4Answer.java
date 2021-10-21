@@ -13,12 +13,15 @@ public class Q4Answer implements DataSerializable {
     private String hoodB;
 
     private Q4Answer() {
-        //static
+        // Serialization
     }
 
     public Q4Answer(final int group, final String firstHood, final String secondHood) {
         this.group = group;
-        setHoods(firstHood, secondHood);
+
+        final boolean ordered = firstHood.compareTo(secondHood) < 0;
+        this.hoodA = ordered ? firstHood  : secondHood;
+        this.hoodB = ordered ? secondHood : firstHood;
     }
 
     @Override
@@ -32,10 +35,9 @@ public class Q4Answer implements DataSerializable {
 
     @Override
     public void readData(final ObjectDataInput input) throws IOException {
-        group               = input.readInt();  
-        hoodA               = input.readUTF();
-        hoodB               = input.readUTF();
-        
+        group = input.readInt();
+        hoodA = input.readUTF();
+        hoodB = input.readUTF();
     }
 
     @Override
@@ -45,22 +47,22 @@ public class Q4Answer implements DataSerializable {
         output.writeUTF(hoodB);  
     }
 
+    @Override
+    public String toString() {
+        return "Q4Answer{" +
+            "group='" + group + '\'' +
+            ", neighbourhood=" + hoodA +
+            ", neighbourhood=" + hoodB +
+            '}';
+    }
+
     public int getGroup() {
         return group;
     }
-
     public String getHoodA() {
         return hoodA;
     }
-
     public String getHoodB() {
         return hoodB;
     }
-
-    private void setHoods(final String firstHood, final String secondHood) {
-        final int compare = firstHood.compareTo(secondHood);
-        hoodA = compare < 0? firstHood : secondHood;
-        hoodB = compare < 0? secondHood : firstHood;
-    }
-    
 }

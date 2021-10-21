@@ -37,7 +37,7 @@ public class Query3 {
         // static
     }
 
-    private static final Comparator<Q3Answer> ANSWER_ORDER = Comparator.comparing(Q3Answer::getDifferentSpecies).reversed();
+    private static final Comparator<Q3Answer> ANSWER_ORDER = Comparator.comparing(Q3Answer::getDistinctSpecies).reversed();
 
     private static final String CSV_HEADER = csvHeaderJoiner()
         .add("NEIGHBOURHOOD")
@@ -48,7 +48,7 @@ public class Query3 {
     private static void writeAnswerToCsv(final Writer writer, final Q3Answer answer) throws IOException {
         writer.write(answer.getHoodName());
         writer.write(OUT_DELIM);
-        writer.write(Integer.toString(answer.getDifferentSpecies()));
+        writer.write(Integer.toString(answer.getDistinctSpecies()));
         writer.write(NEW_LINE);
     }
 
