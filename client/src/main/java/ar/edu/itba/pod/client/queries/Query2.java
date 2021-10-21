@@ -34,6 +34,10 @@ public final class Query2 {
         // static
     }
 
+    private static final String JOB_TRACKER_NAME    = hazelcastNamespace("q2-job-tracker");
+    private static final String TREE_MAP_NAME       = hazelcastNamespace("q2-tree-map");
+    private static final String HOOD_MAP_NAME       = hazelcastNamespace("q2-hood-map");
+
     private static final Comparator<Q2Answer> ANSWER_ORDER = Comparator.comparing(Q2Answer::getHoodName);
 
     private static final String CSV_HEADER = csvHeaderJoiner()
@@ -64,11 +68,10 @@ public final class Query2 {
         final Stream<Tree> trees, final Stream<Neighbourhood> hoods,
         final Writer queryOut, final Writer timeOut) throws IOException, ExecutionException, InterruptedException {
 
-        final MultiMap<String, Tree> treeMap = hazelcast.getMultiMap(hazelcastNamespace("q2-tree-map"));
+        final MultiMap<String, Tree> treeMap = hazelcast.getMultiMap(TREE_MAP_NAME);
         treeMap.clear();
 
-        final String hoodMapName = hazelcastNamespace("q2-hood-map");
-        final Map<String, Neighbourhood> hoodMap = hazelcast.getMap(hoodMapName);
+        final Map<String, Neighbourhood> hoodMap = hazelcast.getMap(HOOD_MAP_NAME);
         hoodMap.clear();
 
         logInputProcessingStart(timeOut);
@@ -79,15 +82,15 @@ public final class Query2 {
         logInputProcessingEnd(timeOut);
 
         final Job<String, Tree> job = hazelcast
-            .getJobTracker(hazelcastNamespace("q2-job-tracker"))
+            .getJobTracker(JOB_TRACKER_NAME)
             .newJob(KeyValueSource.fromMultiMap(treeMap))
             ;
 
         logMapReduceJobStart(timeOut);
 
         final ICompletableFuture<List<Q2Answer>> future = job
-            .keyPredicate   (new CollectionContainsKeyPredicate<>(hoodMapName, HazelcastCollectionExtractor.MAP_KEYS))
-            .mapper         (new Q2Mapper(hoodMapName))
+            .keyPredicate   (new CollectionContainsKeyPredicate<>(HOOD_MAP_NAME, HazelcastCollectionExtractor.MAP_KEYS))
+            .mapper         (new Q2Mapper(HOOD_MAP_NAME))
             .combiner       (new Q2CombinerFactory())
             .reducer        (new Q2ReducerFactory())
             .submit         (new SortedListCollator<>(Map.Entry::getValue, ANSWER_ORDER))

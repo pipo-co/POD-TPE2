@@ -31,6 +31,10 @@ public final class Query1 {
         // static
     }
 
+    private static final String JOB_TRACKER_NAME     = hazelcastNamespace("q1-hoods-name-set");
+    private static final String HOODS_NAME_SET_NAME  = hazelcastNamespace("q1-hoods-name-set");
+    private static final String TREE_MAP_NAME        = hazelcastNamespace("q1-tree-map");
+
     private static final Comparator<Q1Answer> ANSWER_ORDER = Comparator
         .comparingInt   (Q1Answer::getTreeCount).reversed()
         .thenComparing  (Q1Answer::getHood)
@@ -54,11 +58,10 @@ public final class Query1 {
         final Stream<Tree> trees, final Stream<Neighbourhood> hoods,
         final Writer queryOut, final Writer timeOut) throws IOException, ExecutionException, InterruptedException {
 
-        final MultiMap<String, Tree> treeMap = hazelcast.getMultiMap(hazelcastNamespace("q1-tree-map"));
+        final MultiMap<String, Tree> treeMap = hazelcast.getMultiMap(TREE_MAP_NAME);
         treeMap.clear();
 
-        final String hoodsNameSetName = hazelcastNamespace("q1-hoods-name-set");
-        final Set<String> hoodsName = hazelcast.getSet(hoodsNameSetName);
+        final Set<String> hoodsName = hazelcast.getSet(HOODS_NAME_SET_NAME);
         hoodsName.clear();
 
         logInputProcessingStart(timeOut);
@@ -69,14 +72,14 @@ public final class Query1 {
         logInputProcessingEnd(timeOut);
 
         final Job<String, Tree> job = hazelcast
-            .getJobTracker(hazelcastNamespace("q1-job-tracker"))
+            .getJobTracker(JOB_TRACKER_NAME)
             .newJob(KeyValueSource.fromMultiMap(treeMap))
             ;
 
         logMapReduceJobStart(timeOut);
 
         final ICompletableFuture<List<Q1Answer>> future = job
-            .keyPredicate   (new CollectionContainsKeyPredicate<>(hoodsNameSetName, HazelcastCollectionExtractor.SET))
+            .keyPredicate   (new CollectionContainsKeyPredicate<>(HOODS_NAME_SET_NAME, HazelcastCollectionExtractor.SET))
             .mapper         (new Q1Mapper())
             .combiner       (new CountCombinerFactory())
             .reducer        (new CountReducerFactory())

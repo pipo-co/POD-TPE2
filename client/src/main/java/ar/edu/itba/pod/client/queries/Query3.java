@@ -35,8 +35,12 @@ public final class Query3 {
         // static
     }
 
+    private static final String JOB_TRACKER_NAME    = hazelcastNamespace("q3-job-tracker");
+    private static final String TREE_MAP_NAME       = hazelcastNamespace("q3-tree-map");
+    private static final String HOODS_NAME_SET_NAME = hazelcastNamespace("q3-hoods-name-set");
+
     public static final String PROPERTY_ANSWER_COUNT = "n";
-    public static final String INVALID_ANSWER_COUNT_MSG = "'" + PROPERTY_ANSWER_COUNT + "' parameter must be a positive integer";
+    private static final String INVALID_ANSWER_COUNT_MSG = "'" + PROPERTY_ANSWER_COUNT + "' parameter must be a positive integer";
 
     private static final Comparator<Q3Answer> ANSWER_ORDER = Comparator.comparing(Q3Answer::getDistinctSpecies).reversed();
 
@@ -79,11 +83,10 @@ public final class Query3 {
 
         final int answerCount = parseAnswerCount(System.getProperty(PROPERTY_ANSWER_COUNT));
 
-        final MultiMap<String, Tree> treeMap = hazelcast.getMultiMap(hazelcastNamespace("q3-tree-map"));
+        final MultiMap<String, Tree> treeMap = hazelcast.getMultiMap(TREE_MAP_NAME);
         treeMap.clear();
 
-        final String hoodsNameSetName = hazelcastNamespace("q3-hoods-name-set");
-        final Set<String> hoodsName = hazelcast.getSet(hoodsNameSetName);
+        final Set<String> hoodsName = hazelcast.getSet(HOODS_NAME_SET_NAME);
         hoodsName.clear();
 
         logInputProcessingStart(timeOut);
@@ -94,14 +97,14 @@ public final class Query3 {
         logInputProcessingEnd(timeOut);
 
         final Job<String, Tree> job = hazelcast
-            .getJobTracker(hazelcastNamespace("q3-job-tracker"))
+            .getJobTracker(JOB_TRACKER_NAME)
             .newJob(KeyValueSource.fromMultiMap(treeMap))
             ;
         
         logMapReduceJobStart(timeOut);
 
         final ICompletableFuture<List<Q3Answer>> future = job
-            .keyPredicate   (new CollectionContainsKeyPredicate<>(hoodsNameSetName, HazelcastCollectionExtractor.SET))
+            .keyPredicate   (new CollectionContainsKeyPredicate<>(HOODS_NAME_SET_NAME, HazelcastCollectionExtractor.SET))
             .mapper         (new Q3Mapper())
             .combiner       (new ValueSetCombinerFactory<>())
             .reducer        (new DistinctValuesCountReducerFactory<>())

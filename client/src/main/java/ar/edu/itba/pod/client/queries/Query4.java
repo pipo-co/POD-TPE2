@@ -43,6 +43,12 @@ public final class Query4 {
         //Static
     }
 
+    private static final String JOB_TRACKER_1_NAME      = hazelcastNamespace("q4-job-1-tracker");
+    private static final String JOB_TRACKER_2_NAME      = hazelcastNamespace("q4-job-2-tracker");
+    private static final String TREE_MAP_NAME           = hazelcastNamespace("q4-tree-map");
+    private static final String HOODS_NAME_SET_NAME     = hazelcastNamespace("q4-hoods-name-set");
+    private static final String HOODS_SPECIES_LIST_NAME = hazelcastNamespace("q4-hoods-species-list");
+
     private static final Comparator<Integer> GROUPS_ORDER = Comparator.reverseOrder();
 
     private static final String CSV_HEADER = csvHeaderJoiner()
@@ -66,15 +72,13 @@ public final class Query4 {
             final Stream<Tree> trees, final Stream<Neighbourhood> hoods,
             final Writer queryOut, final Writer timeOut) throws IOException, ExecutionException, InterruptedException {
             
-        final MultiMap<String, Tree> treeMap = hazelcast.getMultiMap(hazelcastNamespace("q4-tree-map"));
+        final MultiMap<String, Tree> treeMap = hazelcast.getMultiMap(TREE_MAP_NAME);
         treeMap.clear();
-        
-        final String hoodsNameSetName = hazelcastNamespace("q4-hoods-name-set");
-        final Set<String> hoodsName = hazelcast.getSet(hoodsNameSetName);
+
+        final Set<String> hoodsName = hazelcast.getSet(HOODS_NAME_SET_NAME);
         hoodsName.clear();
 
-        final String hoodSpeciesSetName = hazelcastNamespace("q4-hoods-species-list");
-        final IList<Q3Answer> hoodSpecies = hazelcast.getList(hoodSpeciesSetName);
+        final IList<Q3Answer> hoodSpecies = hazelcast.getList(HOODS_SPECIES_LIST_NAME);
         hoodSpecies.clear();
 
         logInputProcessingStart(timeOut);
@@ -85,14 +89,14 @@ public final class Query4 {
         logInputProcessingEnd(timeOut);
 
         final Job<String, Tree> job1 = hazelcast
-            .getJobTracker(hazelcastNamespace("q4-job-1-tracker"))
+            .getJobTracker(JOB_TRACKER_1_NAME)
             .newJob(KeyValueSource.fromMultiMap(treeMap))
             ;
     
         logMapReduceJobStart(timeOut);
 
         job1
-            .keyPredicate   (new CollectionContainsKeyPredicate<>(hoodsNameSetName, HazelcastCollectionExtractor.SET))
+            .keyPredicate   (new CollectionContainsKeyPredicate<>(HOODS_NAME_SET_NAME, HazelcastCollectionExtractor.SET))
             .mapper         (new Q3Mapper())
             .combiner       (new ValueSetCombinerFactory<>())
             .reducer        (new DistinctValuesCountReducerFactory<>())
@@ -101,7 +105,7 @@ public final class Query4 {
             ;
 
         final Job<String, Q3Answer> job2 = hazelcast
-            .getJobTracker(hazelcastNamespace("q4-job-2-tracker"))
+            .getJobTracker(JOB_TRACKER_2_NAME)
             .newJob(KeyValueSource.fromList(hoodSpecies))
             ;
 
