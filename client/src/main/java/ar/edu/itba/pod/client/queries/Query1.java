@@ -16,13 +16,13 @@ import com.hazelcast.core.MultiMap;
 import com.hazelcast.mapreduce.Job;
 import com.hazelcast.mapreduce.KeyValueSource;
 
-import ar.edu.itba.pod.HazelcastCollectionExtractor;
+import ar.edu.itba.pod.utils.keyPredicates.HazelcastCollectionExtractor;
 import ar.edu.itba.pod.query1.Q1Answer;
-import ar.edu.itba.pod.CountCombinerFactory;
-import ar.edu.itba.pod.SortedListCollator;
+import ar.edu.itba.pod.utils.combiners.CountCombinerFactory;
+import ar.edu.itba.pod.utils.collators.SortedListCollator;
 import ar.edu.itba.pod.query1.Q1Mapper;
-import ar.edu.itba.pod.CountReducerFactory;
-import ar.edu.itba.pod.CollectionContainsKeyPredicate;
+import ar.edu.itba.pod.utils.reducers.CountReducerFactory;
+import ar.edu.itba.pod.utils.keyPredicates.CollectionContainsKeyPredicate;
 import ar.edu.itba.pod.models.Neighbourhood;
 import ar.edu.itba.pod.models.Tree;
 

@@ -20,12 +20,12 @@ import com.hazelcast.core.MultiMap;
 import com.hazelcast.mapreduce.Job;
 import com.hazelcast.mapreduce.KeyValueSource;
 
-import ar.edu.itba.pod.CollectionContainsKeyPredicate;
-import ar.edu.itba.pod.ValueSetCombinerFactory;
-import ar.edu.itba.pod.DistinctValuesCountReducerFactory;
-import ar.edu.itba.pod.HazelcastCollectionExtractor;
+import ar.edu.itba.pod.utils.keyPredicates.CollectionContainsKeyPredicate;
+import ar.edu.itba.pod.utils.combiners.ValueSetCombinerFactory;
+import ar.edu.itba.pod.utils.reducers.DistinctValuesCountReducerFactory;
+import ar.edu.itba.pod.utils.keyPredicates.HazelcastCollectionExtractor;
 import ar.edu.itba.pod.query3.Q3Mapper;
-import ar.edu.itba.pod.SortedListCollator;
+import ar.edu.itba.pod.utils.collators.SortedListCollator;
 import ar.edu.itba.pod.models.Neighbourhood;
 import ar.edu.itba.pod.models.Tree;
 import ar.edu.itba.pod.query3.Q3Answer;

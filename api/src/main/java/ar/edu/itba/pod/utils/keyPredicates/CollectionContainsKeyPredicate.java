@@ -1,4 +1,4 @@
-package ar.edu.itba.pod;
+package ar.edu.itba.pod.utils.keyPredicates;
 
 import static java.util.Objects.*;
 
@@ -12,7 +12,7 @@ public class CollectionContainsKeyPredicate<Key> implements KeyPredicate<Key>, H
 
     // Configuration
     private final       String                        collectionName;
-    private final       HazelcastCollectionExtractor  collectionExtractor;
+    private final HazelcastCollectionExtractor collectionExtractor;
 
     // Transient State
     private transient   Collection<Key>               keyCollection;

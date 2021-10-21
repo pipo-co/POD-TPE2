@@ -1,4 +1,4 @@
-package ar.edu.itba.pod;
+package ar.edu.itba.pod.utils.reducers;
 
 import java.util.Collection;
 import java.util.HashSet;
