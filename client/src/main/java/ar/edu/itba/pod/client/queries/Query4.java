@@ -12,6 +12,7 @@ import static ar.edu.itba.pod.client.QueryUtils.logMapReduceJobStart;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,7 +48,7 @@ public class Query4 {
         //Static
     }
 
-    private static final Comparator<Map.Entry<Integer, List<Q4Answer>>> ANSWER_ORDER = Map.Entry.<Integer, List<Q4Answer>>comparingByKey().reversed();
+    private static final Comparator<Integer> GROUPS_ORDER = Comparator.reverseOrder();
 
     private static final String CSV_HEADER = csvHeaderJoiner()
         .add("GROUP")
@@ -109,18 +110,17 @@ public class Query4 {
             .newJob(KeyValueSource.fromSet(hoodSpecies))
             ;
 
-        final ICompletableFuture<List<Q4Answer>> future = job2
-            .mapper         (new Q4Mapper())
-            .combiner       (new Q4CombinerFactory())
-            .reducer        (new Q4ReducerFactory())
-            .submit         (new Q4SortCollator<>(Map.Entry::getValue, ANSWER_ORDER))
+        final List<Q4Answer> answers = new LinkedList<>();
+
+        job2
+            .mapper     (new Q4Mapper())
+            .combiner   (new ValueSetCombinerFactory<>())
+            .reducer    (new Q4ReducerFactory())
+            .submit     (new SortPreSortedValuesCollator<>(GROUPS_ORDER, answers::add))
+            .get        ()
             ;
-        
 
         queryOut.write(CSV_HEADER);
-
-        final List<Q4Answer> answers = future.get();
-
         for(final Q4Answer answer : answers) {
             writeAnswerToCsv(queryOut, answer);
         }
