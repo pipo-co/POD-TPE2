@@ -1,6 +1,7 @@
 package ar.edu.itba.pod.query4;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -9,14 +10,14 @@ import java.util.Set;
 import com.hazelcast.mapreduce.Reducer;
 import com.hazelcast.mapreduce.ReducerFactory;
 
-public class Q4ReducerFactory implements ReducerFactory<Integer, Set<String>, List<Q4Answer>>{
+public class Q4ReducerFactory implements ReducerFactory<Integer, Set<String>, Collection<Q4Answer>> {
 
     @Override
-    public Reducer<Set<String>, List<Q4Answer>> newReducer(final Integer group) {
+    public Reducer<Set<String>, Collection<Q4Answer>> newReducer(final Integer group) {
         return new Q4Reducer(group);
     }
     
-    private static class Q4Reducer extends Reducer<Set<String>, List<Q4Answer>> {
+    private static class Q4Reducer extends Reducer<Set<String>, Collection<Q4Answer>> {
 
         private final   int             group;
         private         List<String>    hoods;

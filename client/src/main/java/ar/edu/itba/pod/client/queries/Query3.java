@@ -21,11 +21,11 @@ import com.hazelcast.mapreduce.Job;
 import com.hazelcast.mapreduce.KeyValueSource;
 
 import ar.edu.itba.pod.CollectionContainsKeyPredicate;
-import ar.edu.itba.pod.DifferentSpeciesCombinerFactory;
-import ar.edu.itba.pod.DifferentSpeciesReducerFactory;
+import ar.edu.itba.pod.ValueSetCombinerFactory;
+import ar.edu.itba.pod.DistinctValuesCountReducerFactory;
 import ar.edu.itba.pod.HazelcastCollectionExtractor;
-import ar.edu.itba.pod.HoodTreesMapper;
-import ar.edu.itba.pod.SortCollator;
+import ar.edu.itba.pod.query3.Q3Mapper;
+import ar.edu.itba.pod.SortedListCollator;
 import ar.edu.itba.pod.models.Neighbourhood;
 import ar.edu.itba.pod.models.Tree;
 import ar.edu.itba.pod.query3.Q3Answer;
@@ -103,9 +103,9 @@ public final class Query3 {
         final ICompletableFuture<List<Q3Answer>> future = job
             .keyPredicate   (new CollectionContainsKeyPredicate<>(hoodsNameSetName, HazelcastCollectionExtractor.SET))
             .mapper         (new Q3Mapper())
-            .combiner       (new DifferentSpeciesCombinerFactory())
-            .reducer        (new DifferentSpeciesReducerFactory())
-            .submit         (new SortCollator<>(Map.Entry::getValue, ANSWER_ORDER))
+            .combiner       (new ValueSetCombinerFactory<>())
+            .reducer        (new DistinctValuesCountReducerFactory<>())
+            .submit         (new SortedListCollator<>(Q3Answer::fromEntry, ANSWER_ORDER))
             ;
     
         final List<Q3Answer> answers = future.get();

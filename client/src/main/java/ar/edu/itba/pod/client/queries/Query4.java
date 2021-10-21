@@ -26,10 +26,12 @@ import com.hazelcast.mapreduce.Job;
 import com.hazelcast.mapreduce.KeyValueSource;
 
 import ar.edu.itba.pod.CollectionContainsKeyPredicate;
-import ar.edu.itba.pod.DifferentSpeciesCombinerFactory;
-import ar.edu.itba.pod.DifferentSpeciesReducerFactory;
+import ar.edu.itba.pod.SortPreSortedValuesCollator;
+import ar.edu.itba.pod.MapCollator;
+import ar.edu.itba.pod.ValueSetCombinerFactory;
+import ar.edu.itba.pod.DistinctValuesCountReducerFactory;
 import ar.edu.itba.pod.HazelcastCollectionExtractor;
-import ar.edu.itba.pod.HoodTreesMapper;
+import ar.edu.itba.pod.query3.Q3Mapper;
 import ar.edu.itba.pod.models.Neighbourhood;
 import ar.edu.itba.pod.models.Tree;
 import ar.edu.itba.pod.query3.Q3Answer;
@@ -86,24 +88,21 @@ public class Query4 {
 
         logInputProcessingEnd(timeOut);
 
-        final Job<String, Tree> job = hazelcast
+        final Job<String, Tree> job1 = hazelcast
             .getJobTracker(hazelcastNamespace("q4-job-1-tracker"))
             .newJob(KeyValueSource.fromMultiMap(treeMap))
             ;
     
         logMapReduceJobStart(timeOut);
 
-        final ICompletableFuture<Map<String, Q3Answer>> auxFuture = job
+        job1
             .keyPredicate   (new CollectionContainsKeyPredicate<>(hoodsNameSetName, HazelcastCollectionExtractor.SET))
             .mapper         (new Q3Mapper())
-            .combiner       (new DifferentSpeciesCombinerFactory())
-            .reducer        (new DifferentSpeciesReducerFactory())
-            .submit         ()
+            .combiner       (new ValueSetCombinerFactory<>())
+            .reducer        (new DistinctValuesCountReducerFactory<>())
+            .submit         (new MapCollator<>(Q3Answer::fromEntry, hoodSpecies::add))
+            .get            ()
             ;
-    
-        final Map<String, Q3Answer> auxAnswers = auxFuture.get();
-
-        hoodSpecies.addAll(auxAnswers.values());
 
         final Job<String, Q3Answer> job2 = hazelcast
             .getJobTracker(hazelcastNamespace("q4-job-2-tracker"))
