@@ -21,7 +21,7 @@ import com.hazelcast.mapreduce.KeyValueSource;
 
 import ar.edu.itba.pod.CollectionContainsKeyPredicate;
 import ar.edu.itba.pod.HazelcastCollectionExtractor;
-import ar.edu.itba.pod.SortCollator;
+import ar.edu.itba.pod.SortedListCollator;
 import ar.edu.itba.pod.models.Neighbourhood;
 import ar.edu.itba.pod.models.Tree;
 import ar.edu.itba.pod.query2.Q2Answer;
@@ -90,7 +90,7 @@ public final class Query2 {
             .mapper         (new Q2Mapper(hoodMapName))
             .combiner       (new Q2CombinerFactory())
             .reducer        (new Q2ReducerFactory())
-            .submit         (new SortCollator<>(Map.Entry::getValue, ANSWER_ORDER))
+            .submit         (new SortedListCollator<>(Map.Entry::getValue, ANSWER_ORDER))
             ;
         
         final List<Q2Answer> answers = future.get();

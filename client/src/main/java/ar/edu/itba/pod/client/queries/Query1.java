@@ -19,7 +19,7 @@ import com.hazelcast.mapreduce.KeyValueSource;
 import ar.edu.itba.pod.HazelcastCollectionExtractor;
 import ar.edu.itba.pod.query1.Q1Answer;
 import ar.edu.itba.pod.CountCombinerFactory;
-import ar.edu.itba.pod.SortCollator;
+import ar.edu.itba.pod.SortedListCollator;
 import ar.edu.itba.pod.query1.Q1Mapper;
 import ar.edu.itba.pod.CountReducerFactory;
 import ar.edu.itba.pod.CollectionContainsKeyPredicate;
@@ -80,7 +80,7 @@ public final class Query1 {
             .mapper         (new Q1Mapper())
             .combiner       (new CountCombinerFactory())
             .reducer        (new CountReducerFactory())
-            .submit         (new SortCollator<>(Q1Answer::fromEntry, ANSWER_ORDER))
+            .submit         (new SortedListCollator<>(Q1Answer::fromEntry, ANSWER_ORDER))
             ;
 
         final List<Q1Answer> answers = future.get();
