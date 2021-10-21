@@ -95,7 +95,7 @@ public class Query4 {
 
         final ICompletableFuture<Map<String, Q3Answer>> auxFuture = job
             .keyPredicate   (new CollectionContainsKeyPredicate<>(hoodsNameSetName, HazelcastCollectionExtractor.SET))
-            .mapper         (new HoodTreesMapper())
+            .mapper         (new Q3Mapper())
             .combiner       (new DifferentSpeciesCombinerFactory())
             .reducer        (new DifferentSpeciesReducerFactory())
             .submit         ()

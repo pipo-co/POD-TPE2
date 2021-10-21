@@ -90,7 +90,7 @@ public class Query3 {
 
         final ICompletableFuture<List<Q3Answer>> future = job
             .keyPredicate   (new CollectionContainsKeyPredicate<>(hoodsNameSetName, HazelcastCollectionExtractor.SET))
-            .mapper         (new HoodTreesMapper())
+            .mapper         (new Q3Mapper())
             .combiner       (new DifferentSpeciesCombinerFactory())
             .reducer        (new DifferentSpeciesReducerFactory())
             .submit         (new SortCollator<>(Map.Entry::getValue, ANSWER_ORDER))
