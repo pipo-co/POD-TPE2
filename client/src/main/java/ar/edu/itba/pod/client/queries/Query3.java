@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Stream;
@@ -31,11 +30,13 @@ import ar.edu.itba.pod.models.Neighbourhood;
 import ar.edu.itba.pod.models.Tree;
 import ar.edu.itba.pod.query3.Q3Answer;
 
-public class Query3 {
-
+public final class Query3 {
     private Query3() {
         // static
     }
+
+    public static final String PROPERTY_ANSWER_COUNT = "n";
+    public static final String INVALID_ANSWER_COUNT_MSG = "'" + PROPERTY_ANSWER_COUNT + "' parameter must be a positive integer";
 
     private static final Comparator<Q3Answer> ANSWER_ORDER = Comparator.comparing(Q3Answer::getDistinctSpecies).reversed();
 
@@ -52,21 +53,32 @@ public class Query3 {
         writer.write(NEW_LINE);
     }
 
+    private static int parseAnswerCount(final String answerCount) {
+        final int ret;
+        if(answerCount == null) {
+            throw new IllegalArgumentException("'" + PROPERTY_ANSWER_COUNT + "' parameter is required");
+        }
+
+        try {
+            ret = Integer.parseInt(answerCount);
+        } catch(final NumberFormatException e) {
+            throw new IllegalArgumentException(INVALID_ANSWER_COUNT_MSG);
+        }
+
+        if(ret <= 0) {
+            throw new IllegalArgumentException(INVALID_ANSWER_COUNT_MSG);
+        }
+
+        return ret;
+    }
 
     public static void execute(
             final HazelcastInstance hazelcast,
             final Stream<Tree> trees, final Stream<Neighbourhood> hoods,
             final Writer queryOut, final Writer timeOut) throws IOException, ExecutionException, InterruptedException {
 
-        final String nHoodsStr = System.getProperty("n");
-        final int nHoods;
-        if (nHoodsStr == null) {
-            throw new IOException();
-        }
-        else {
-            nHoods = Integer.valueOf(nHoodsStr);
-        }
-        
+        final int answerCount = parseAnswerCount(System.getProperty(PROPERTY_ANSWER_COUNT));
+
         final MultiMap<String, Tree> treeMap = hazelcast.getMultiMap(hazelcastNamespace("q3-tree-map"));
         treeMap.clear();
 
@@ -98,12 +110,9 @@ public class Query3 {
     
         final List<Q3Answer> answers = future.get();
 
-        final int total = answers.size() > nHoods ? nHoods: answers.size();
-
         queryOut.write(CSV_HEADER);
-
-        for (int i = 0; i < total; i++) {
-            writeAnswerToCsv(queryOut, answers.get(i));    
+        for(final Q3Answer answer : answers.subList(0, Math.min(answers.size(), answerCount))) {
+            writeAnswerToCsv(queryOut, answer);
         }
         
         logMapReduceJobEnd(timeOut);
@@ -111,7 +120,5 @@ public class Query3 {
         // Limpiamos recursos usados
         treeMap.clear();
         hoodsName.clear();
-    
-    
-        }
+    }
 }
