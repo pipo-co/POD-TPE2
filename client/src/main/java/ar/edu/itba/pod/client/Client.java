@@ -30,7 +30,6 @@ import ar.edu.itba.pod.client.queries.Query1;
 import ar.edu.itba.pod.client.queries.Query2;
 import ar.edu.itba.pod.client.queries.Query3;
 import ar.edu.itba.pod.client.queries.Query4;
-import ar.edu.itba.pod.models.CityCSVDatasource;
 import ar.edu.itba.pod.models.Neighbourhood;
 import ar.edu.itba.pod.models.Tree;
 

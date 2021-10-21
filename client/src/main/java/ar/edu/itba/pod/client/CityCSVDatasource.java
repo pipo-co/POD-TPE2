@@ -1,4 +1,7 @@
-package ar.edu.itba.pod.models;
+package ar.edu.itba.pod.client;
+
+import ar.edu.itba.pod.models.Neighbourhood;
+import ar.edu.itba.pod.models.Tree;
 
 public enum CityCSVDatasource {
     BUE {
