@@ -14,7 +14,6 @@ import java.io.Writer;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Stream;
@@ -36,13 +35,10 @@ import ar.edu.itba.pod.models.Neighbourhood;
 import ar.edu.itba.pod.models.Tree;
 import ar.edu.itba.pod.query3.Q3Answer;
 import ar.edu.itba.pod.query4.Q4Answer;
-import ar.edu.itba.pod.query4.Q4CombinerFactory;
 import ar.edu.itba.pod.query4.Q4Mapper;
 import ar.edu.itba.pod.query4.Q4ReducerFactory;
-import ar.edu.itba.pod.query4.Q4SortCollator;
 
-public class Query4 {
-    
+public final class Query4 {
     private Query4() {
         //Static
     }
@@ -127,10 +123,8 @@ public class Query4 {
         logMapReduceJobEnd(timeOut);
 
         // Limpiamos recursos usados
-        treeMap.clear();
-        hoodsName.clear();
-        hoodSpecies.clear();
-
-        }
-            
+        treeMap     .clear();
+        hoodsName   .clear();
+        hoodSpecies .clear();
+    }
 }
