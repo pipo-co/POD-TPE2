@@ -1,6 +1,6 @@
 package ar.edu.itba.pod.client;
 
-import static ar.edu.itba.pod.client.QueryUtils.IN_DELIM;
+import static ar.edu.itba.pod.client.QueryUtils.*;
 import static java.util.Objects.requireNonNull;
 
 import java.io.BufferedWriter;
@@ -11,6 +11,8 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -56,7 +58,7 @@ public final class Client {
     public static final String DEFAULT_GROUP_PASS = "g16-pass";
     public static final String DEFAULT_ADDRESS    = "127.0.0.1:" + NetworkConfig.DEFAULT_PORT;
 
-    private static Query getQuery(final int queryCount) {
+    private static QueryToCSV getQuery(final int queryCount) {
         if(queryCount < 1 || queryCount > QueryEnum.SIZE) {
             throw new IllegalArgumentException("Invalid query count " + queryCount + ". Values go from 1 to " + QueryEnum.SIZE);
         }
@@ -110,6 +112,24 @@ public final class Client {
         return createWritableFile(Path.of(outPath, TIME_OUT_FILE_PREFIX + queryCount + TIME_OUT_FILE_SUFFIX));
     }
 
+    public static final String            TIMESTAMP_PATTERN     = "dd/MM/yyyy HH:mm:ss:SSSS";
+    public static final DateTimeFormatter TIMESTAMP_FORMATTER   = DateTimeFormatter
+        .ofPattern  (TIMESTAMP_PATTERN)
+        .withLocale (DEFAULT_LOCALE)
+        .withZone   (DEFAULT_ZONE_ID)
+        ;
+    private static void writeTimestampMessage(final Writer writer, final Instant timestamp, final String message) throws IOException {
+        writer.write(TIMESTAMP_FORMATTER.format(timestamp) + " - " + message);
+        writer.write(NEW_LINE);
+    }
+
+    public static void writeQueryMetrics(final Writer writer, final QueryMetrics metrics) throws IOException {
+        writeTimestampMessage(writer, metrics.inputProcessingStart, "Inicio de la lectura del archivo");
+        writeTimestampMessage(writer, metrics.inputProcessingEnd,   "Fin de lectura del archivo");
+        writeTimestampMessage(writer, metrics.mapReduceJobStart,    "Inicio del trabajo map/reduce");
+        writeTimestampMessage(writer, metrics.mapReduceJobEnd,      "Fin del trabajo map/reduce");
+    }
+
     public static void main(final String[] args) throws IOException, ExecutionException, InterruptedException {
         logger.info("Client Starting ...");
 
@@ -147,8 +167,9 @@ public final class Client {
         try(final Stream<String> treeLines  = Files.lines(treeCsv, charset);
             final Stream<String> hoodLines  = Files.lines(hoodCsv, charset);
             final var queryOutWriter        = new BufferedWriter(new FileWriter(queryOut.toFile(), charset));
-            final var timeOutWriter         = new BufferedWriter(new FileWriter(timeOut.toFile(), charset))) {
-            getQuery(queryCount).execute(
+            final var metricsWriter         = new BufferedWriter(new FileWriter(timeOut.toFile(), charset))) {
+
+            final QueryMetrics metrics = getQuery(queryCount).executeToCSV(
                 hazelcast,
                 treeLines
                     .skip(1)
@@ -158,9 +179,10 @@ public final class Client {
                     .skip(1)
                     .map(line -> line.split(IN_DELIM))
                     .map(datasource::hoodFromCSV),
-                queryOutWriter,
-                timeOutWriter
+                queryOutWriter
             );
+
+            writeQueryMetrics(metricsWriter, metrics);
         }
 
         HazelcastClient.shutdownAll();
@@ -168,27 +190,27 @@ public final class Client {
         logger.info("Query " + queryCount + " Finished");
     }
 
-    public enum QueryEnum implements Query {
-        Q1(Query1::execute),
-        Q2(Query2::execute),
-        Q3(Query3::execute),
-        Q4(Query4::execute),
+    public enum QueryEnum implements QueryToCSV {
+        Q1(Query1::executeToCSV),
+        Q2(Query2::executeToCSV),
+        Q3(Query3::executeToCSV),
+        Q4(Query4::executeToCSV),
         ;
 
         public static final List<QueryEnum> VALUES  = Arrays.asList(values());
         public static final int             SIZE    = VALUES.size();
 
-        private final Query query;
+        private final QueryToCSV query;
 
-        QueryEnum(final Query query) {
+        QueryEnum(final QueryToCSV query) {
             this.query = query;
         }
 
-        public void execute(
+        public QueryMetrics executeToCSV(
             final HazelcastInstance hazelcast,
             final Stream<Tree> trees, final Stream<Neighbourhood> hoods,
-            final Writer queryOut, final Writer timeOut) throws IOException, ExecutionException, InterruptedException {
-            query.execute(hazelcast, trees, hoods, queryOut, timeOut);
+            final Writer queryOut) throws IOException, ExecutionException, InterruptedException {
+            return query.executeToCSV(hazelcast, trees, hoods, queryOut);
         }
     }
 }
