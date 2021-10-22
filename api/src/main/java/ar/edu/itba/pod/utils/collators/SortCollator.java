@@ -10,7 +10,7 @@ import java.util.stream.StreamSupport;
 
 import com.hazelcast.mapreduce.Collator;
 
-public class SortedListCollator<Key, Value, Answer> implements Collator<Map.Entry<Key, Value>, Void> {
+public class SortCollator<Key, Value, Answer> implements Collator<Map.Entry<Key, Value>, Void> {
 
     private final Function<Map.Entry<Key, Value>, Answer>   entryToAnswer;
     private final Comparator<? super Answer>                comparator;
@@ -18,7 +18,7 @@ public class SortedListCollator<Key, Value, Answer> implements Collator<Map.Entr
     private final long                                      skip;
     private final long                                      limit;
 
-    public SortedListCollator(
+    public SortCollator(
         final Function<Map.Entry<Key, Value>, Answer>   toAnswer,
         final Comparator<? super Answer>                comparator,
         final long                                      skip,
@@ -32,7 +32,7 @@ public class SortedListCollator<Key, Value, Answer> implements Collator<Map.Entr
         this.limit          = Long.MAX_VALUE;
     }
 
-    public SortedListCollator(
+    public SortCollator(
         final Function<Map.Entry<Key, Value>, Answer>   toAnswer,
         final Comparator<? super Answer>                comparator,
         final Consumer<Answer>                          callback) {

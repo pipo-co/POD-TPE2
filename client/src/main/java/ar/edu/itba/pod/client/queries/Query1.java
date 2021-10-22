@@ -19,7 +19,7 @@ import ar.edu.itba.pod.client.QueryMetrics;
 import ar.edu.itba.pod.utils.keyPredicates.HazelcastCollectionExtractor;
 import ar.edu.itba.pod.query1.Q1Answer;
 import ar.edu.itba.pod.utils.combiners.CountCombinerFactory;
-import ar.edu.itba.pod.utils.collators.SortedListCollator;
+import ar.edu.itba.pod.utils.collators.SortCollator;
 import ar.edu.itba.pod.query1.Q1Mapper;
 import ar.edu.itba.pod.utils.reducers.CountReducerFactory;
 import ar.edu.itba.pod.utils.keyPredicates.CollectionContainsKeyPredicate;
@@ -94,7 +94,7 @@ public final class Query1 {
             .mapper         (new Q1Mapper())
             .combiner       (new CountCombinerFactory())
             .reducer        (new CountReducerFactory())
-            .submit         (new SortedListCollator<>(Q1Answer::fromEntry, ANSWER_ORDER, callback))
+            .submit         (new SortCollator<>(Q1Answer::fromEntry, ANSWER_ORDER, callback))
             .get            ()
             ;
 

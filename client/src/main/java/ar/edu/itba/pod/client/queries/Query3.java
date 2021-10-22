@@ -23,7 +23,7 @@ import ar.edu.itba.pod.utils.combiners.ValueSetCombinerFactory;
 import ar.edu.itba.pod.utils.reducers.DistinctValuesCountReducerFactory;
 import ar.edu.itba.pod.utils.keyPredicates.HazelcastCollectionExtractor;
 import ar.edu.itba.pod.query3.Q3Mapper;
-import ar.edu.itba.pod.utils.collators.SortedListCollator;
+import ar.edu.itba.pod.utils.collators.SortCollator;
 import ar.edu.itba.pod.models.Neighbourhood;
 import ar.edu.itba.pod.models.Tree;
 import ar.edu.itba.pod.query3.Q3Answer;
@@ -117,7 +117,7 @@ public final class Query3 {
             .mapper         (new Q3Mapper())
             .combiner       (new ValueSetCombinerFactory<>())
             .reducer        (new DistinctValuesCountReducerFactory<>())
-            .submit         (new SortedListCollator<>(Q3Answer::fromEntry, ANSWER_ORDER, 0, answerCount, callback))
+            .submit         (new SortCollator<>(Q3Answer::fromEntry, ANSWER_ORDER, 0, answerCount, callback))
             .get            ()
             ;
 

@@ -19,7 +19,7 @@ import com.hazelcast.mapreduce.Job;
 import com.hazelcast.mapreduce.KeyValueSource;
 
 import ar.edu.itba.pod.client.QueryMetrics;
-import ar.edu.itba.pod.utils.collators.SortedListCollator;
+import ar.edu.itba.pod.utils.collators.SortCollator;
 import ar.edu.itba.pod.models.Neighbourhood;
 import ar.edu.itba.pod.models.Tree;
 import ar.edu.itba.pod.query2.Q2Answer;
@@ -103,7 +103,7 @@ public final class Query2 {
             .mapper         (new Q2Mapper(HOOD_MAP_NAME))
             .combiner       (new Q2CombinerFactory())
             .reducer        (new Q2ReducerFactory())
-            .submit         (new SortedListCollator<>(Map.Entry::getValue, ANSWER_ORDER, callback))
+            .submit         (new SortCollator<>(Map.Entry::getValue, ANSWER_ORDER, callback))
             .get            ()
             ;
 
