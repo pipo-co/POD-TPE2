@@ -58,13 +58,15 @@
       <groupId>com.hazelcast</groupId>
       <artifactId>hazelcast</artifactId>
       <classifier>tests</classifier>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.hazelcast</groupId>
       <artifactId>hazelcast-client</artifactId>
       <classifier>tests</classifier>
-      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
     </dependency>
   </dependencies>
 

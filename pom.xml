@@ -26,7 +26,8 @@
     <slf4j.version>1.7.32</slf4j.version>
     <log4j.version>1.2.17</log4j.version>
     <!-- Testing -->
-    <junit.version>5.7.2</junit.version>
+    <junit5.version>5.7.2</junit5.version>
+    <junit4.version>4.12</junit4.version>
     <mockito.version>1.10.19</mockito.version>
   </properties>
 
@@ -68,7 +69,7 @@
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-engine</artifactId>
-        <version>${junit.version}</version>
+        <version>${junit5.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -89,6 +90,13 @@
         <artifactId>hazelcast-client</artifactId>
         <version>${hazelcast.version}</version>
         <classifier>tests</classifier>
+        <scope>test</scope>
+      </dependency>
+      <!-- Los test de hazelcast requieren JUnit 4 -->
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit4.version}</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
