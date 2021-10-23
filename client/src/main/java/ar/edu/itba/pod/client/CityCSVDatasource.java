@@ -18,7 +18,7 @@ public enum CityCSVDatasource {
     VAN {
         @Override
         public Tree treeFromCSV(final String[] csv) {
-            return new Tree(csv[2], csv[6], csv[12]);
+            return new Tree(csv[12], csv[2], csv[6]);
         }
 
         @Override
