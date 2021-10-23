@@ -40,7 +40,7 @@ public final class Query3 {
     public  static final String PROPERTY_ANSWER_COUNT = "n";
     private static final String INVALID_ANSWER_COUNT_MSG = "'" + PROPERTY_ANSWER_COUNT + "' parameter must be a positive integer";
 
-    private static final Comparator<Q3Answer> ANSWER_ORDER = Comparator.comparing(Q3Answer::getDistinctSpecies).reversed();
+    private static final Comparator<Q3Answer> ANSWER_ORDER = Comparator.comparing(Q3Answer::getDistinctSpecies).reversed().thenComparing(Q3Answer::getHoodName);
 
     public static final String CSV_HEADER = csvHeaderJoiner()
         .add("NEIGHBOURHOOD")
