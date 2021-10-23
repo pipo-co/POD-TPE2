@@ -20,7 +20,7 @@ import ar.edu.itba.pod.utils.keyPredicates.HazelcastCollectionExtractor;
 import ar.edu.itba.pod.query1.Q1Answer;
 import ar.edu.itba.pod.utils.combiners.CountCombinerFactory;
 import ar.edu.itba.pod.utils.collators.SortCollator;
-import ar.edu.itba.pod.query1.Q1Mapper;
+import ar.edu.itba.pod.utils.mappers.NopMapper;
 import ar.edu.itba.pod.utils.reducers.CountReducerFactory;
 import ar.edu.itba.pod.utils.keyPredicates.CollectionContainsKeyPredicate;
 import ar.edu.itba.pod.models.Neighbourhood;
@@ -91,7 +91,7 @@ public final class Query1 {
 
         job
             .keyPredicate   (new CollectionContainsKeyPredicate<>(HOODS_NAME_SET_NAME, HazelcastCollectionExtractor.SET))
-            .mapper         (new Q1Mapper(HOODS_NAME_SET_NAME))
+            .mapper         (new NopMapper<>())
             .combiner       (new CountCombinerFactory())
             .reducer        (new CountReducerFactory())
             .submit         (new SortCollator<>(Q1Answer::fromEntry, ANSWER_ORDER, callback))

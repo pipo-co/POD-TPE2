@@ -32,7 +32,7 @@ public class Query1Test extends AbstractQueryTest {
             new Tree("3", "3-street", "t3"),
             new Tree("3", "4-street", "t4"),
             new Tree("1", "5-street", "t5"),
-            new Tree("7", "5-street", "t6")
+            new Tree("not_found", "5-street", "t6")
         ).unordered();
 
         final List<Q1Answer> answers = new LinkedList<>();
@@ -42,8 +42,7 @@ public class Query1Test extends AbstractQueryTest {
         final List<Q1Answer> expectedAnswers = List.of(
             new Q1Answer("1", 2),
             new Q1Answer("3", 2),
-            new Q1Answer("2", 1),
-            new Q1Answer("4", 0)
+            new Q1Answer("2", 1)
         );
         assertEquals(expectedAnswers, answers);
     }
