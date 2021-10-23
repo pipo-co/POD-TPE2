@@ -31,9 +31,9 @@ public final class Query1 {
         // static
     }
 
-    private static final String JOB_TRACKER_NAME     = hazelcastNamespace("q1-hoods-name-set");
+    private static final String JOB_TRACKER_NAME     = hazelcastNamespace("q1-job-tracker");
     private static final String HOODS_NAME_SET_NAME  = hazelcastNamespace("q1-hoods-name-set");
-    private static final String TREE_MAP_NAME        = hazelcastNamespace("q1-tree-map");
+    private static final String TREE_HOOD_1_MAP_NAME = hazelcastNamespace("q1-tree-hood-1-map");
 
     private static final Comparator<Q1Answer> ANSWER_ORDER = Comparator
         .comparingInt   (Q1Answer::getTreeCount).reversed()
@@ -69,29 +69,29 @@ public final class Query1 {
 
         final QueryMetrics.Builder metrics = QueryMetrics.build();
 
-        final MultiMap<String, Tree> treeMap = hazelcast.getMultiMap(TREE_MAP_NAME);
-        treeMap.clear();
+        final MultiMap<String, Integer> treeHoodTo1 = hazelcast.getMultiMap(TREE_HOOD_1_MAP_NAME);
+        treeHoodTo1.clear();
 
         final Set<String> hoodsName = hazelcast.getSet(HOODS_NAME_SET_NAME);
         hoodsName.clear();
 
         metrics.recordInputProcessingStart();
 
-        trees.forEach(tree -> treeMap.put(tree.getHoodName(), tree));
+        trees.forEach(tree -> treeHoodTo1.put(tree.getHoodName(), 1));
         hoods.map(Neighbourhood::getName).forEach(hoodsName::add);
 
         metrics.recordInputProcessingEnd();
 
-        final Job<String, Tree> job = hazelcast
+        final Job<String, Integer> job = hazelcast
             .getJobTracker(JOB_TRACKER_NAME)
-            .newJob(KeyValueSource.fromMultiMap(treeMap))
+            .newJob(KeyValueSource.fromMultiMap(treeHoodTo1))
             ;
 
         metrics.recordMapReduceJobStart();
 
         job
             .keyPredicate   (new CollectionContainsKeyPredicate<>(HOODS_NAME_SET_NAME, HazelcastCollectionExtractor.SET))
-            .mapper         (new Q1Mapper())
+            .mapper         (new Q1Mapper(HOODS_NAME_SET_NAME))
             .combiner       (new CountCombinerFactory())
             .reducer        (new CountReducerFactory())
             .submit         (new SortCollator<>(Q1Answer::fromEntry, ANSWER_ORDER, callback))
@@ -101,7 +101,7 @@ public final class Query1 {
         metrics.recordMapReduceJobEnd();
 
         // Limpiamos recursos usados
-        treeMap.clear();
+        treeHoodTo1.clear();
         hoodsName.clear();
 
         return metrics.build();
