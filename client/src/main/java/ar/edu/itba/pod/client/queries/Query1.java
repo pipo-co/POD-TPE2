@@ -101,8 +101,8 @@ public final class Query1 {
         metrics.recordMapReduceJobEnd();
 
         // Limpiamos recursos usados
-        treeHoodTo1.clear();
-        hoodsName.clear();
+        treeHoodTo1 .clear();
+        hoodsName   .clear();
 
         return metrics.build();
     }

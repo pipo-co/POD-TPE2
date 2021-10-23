@@ -124,8 +124,8 @@ public final class Query3 {
         metrics.recordMapReduceJobEnd();
 
         // Limpiamos recursos usados
-        treeMap.clear();
-        hoodsName.clear();
+        treeMap     .clear();
+        hoodsName   .clear();
 
         return metrics.build();
     }
