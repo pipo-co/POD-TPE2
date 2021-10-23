@@ -1,6 +1,7 @@
 package ar.edu.itba.pod.query2;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
@@ -36,6 +37,21 @@ public class Q2Answer implements DataSerializable {
         output.writeUTF     (hoodName);
         output.writeUTF     (treeName);
         output.writeDouble  (treesPerInhabitant);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if(this == o) return true;
+        if(!(o instanceof Q2Answer)) return false;
+        final Q2Answer q2Answer = (Q2Answer) o;
+        return Double.compare(q2Answer.treesPerInhabitant, treesPerInhabitant) == 0
+            && Objects.equals(hoodName, q2Answer.hoodName)
+            && Objects.equals(treeName, q2Answer.treeName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(hoodName, treeName, treesPerInhabitant);
     }
 
     @Override

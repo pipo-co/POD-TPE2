@@ -2,6 +2,7 @@ package ar.edu.itba.pod.query1;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 
 import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
@@ -35,6 +36,21 @@ public class Q1Answer implements DataSerializable {
     public void readData(final ObjectDataInput in) throws IOException {
         hood        = in.readUTF();
         treeCount   = in.readInt();
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if(this == o) return true;
+        if(!(o instanceof Q1Answer)) return false;
+        final Q1Answer q1Answer = (Q1Answer) o;
+        return treeCount == q1Answer.treeCount
+            && Objects.equals(hood, q1Answer.hood)
+            ;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(hood, treeCount);
     }
 
     @Override

@@ -2,6 +2,7 @@ package ar.edu.itba.pod.query4;
 
 import java.io.IOException;
 import java.util.Comparator;
+import java.util.Objects;
 
 import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
@@ -47,6 +48,21 @@ public class Q4Answer implements DataSerializable, Comparable<Q4Answer> {
         output.writeInt(group);
         output.writeUTF(hoodA);
         output.writeUTF(hoodB);  
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if(this == o) return true;
+        if(!(o instanceof Q4Answer)) return false;
+        final Q4Answer q4Answer = (Q4Answer) o;
+        return group == q4Answer.group
+            && Objects.equals(hoodA, q4Answer.hoodA)
+            && Objects.equals(hoodB, q4Answer.hoodB);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(group, hoodA, hoodB);
     }
 
     @Override
