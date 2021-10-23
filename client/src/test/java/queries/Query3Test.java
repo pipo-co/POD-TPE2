@@ -19,10 +19,11 @@ public class Query3Test extends AbstractQueryTest {
     @Test
     public void test_query_3() throws ExecutionException, InterruptedException {
 
-        System.setProperty(Query3.PROPERTY_ANSWER_COUNT, "4");
+        System.setProperty(Query3.PROPERTY_ANSWER_COUNT, "5");
 
         final Stream<Neighbourhood> hoods = Stream.of(
             new Neighbourhood("1", 30),
+            new Neighbourhood("11", 30),
             new Neighbourhood("2", 40),
             new Neighbourhood("3", 50),
             new Neighbourhood("4", 60),
@@ -35,13 +36,21 @@ public class Query3Test extends AbstractQueryTest {
             new Tree("1", "2-street", "t2"),
             new Tree("1", "3-street", "t3"),
             new Tree("1", "4-street", "t1"),
+            new Tree("11", "1-street", "t1"),
+            new Tree("11", "2-street", "t2"),
+            new Tree("11", "3-street", "t3"),
+            new Tree("11", "4-street", "t1"),
             new Tree("2", "5-street", "t2"),
             new Tree("2", "6-street", "t3"),
             new Tree("2", "7-street", "t1"),
             new Tree("2", "8-street", "t2"),
             new Tree("2", "9-street", "t5"),
             new Tree("2", "10-street", "t1"),
+            new Tree("5", "10-street", "t1"),
+            new Tree("6", "10-street", "t2"),
             new Tree("2", "11-street", "t2"),
+            new Tree("3", "12-street", "t1"),
+            new Tree("3", "12-street", "t2"),
             new Tree("3", "12-street", "t3"),
             new Tree("4", "12-street", "t6"),
             new Tree("not_found", "13-street", "t1")
@@ -54,7 +63,8 @@ public class Query3Test extends AbstractQueryTest {
         final List<Q3Answer> expectedAnswers = List.of(
             new Q3Answer("2", 4),
             new Q3Answer("1", 3),
-            new Q3Answer("3", 1),
+            new Q3Answer("11", 3),
+            new Q3Answer("3", 3),
             new Q3Answer("4", 1)
         );
         assertEquals(expectedAnswers, answers);

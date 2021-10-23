@@ -38,7 +38,8 @@ public class Query4Test extends AbstractQueryTest {
             IntStream.range(0, 322) .mapToObj(i -> new Tree("5", "5-street", "t" + i)),
             IntStream.range(0, 5)   .mapToObj(i -> new Tree("6", "6-street", "t" + i)),
             IntStream.range(0, 10)  .mapToObj(i -> new Tree("7", "7-street", "t" + i)),
-            IntStream.range(0, 101) .mapToObj(i -> new Tree("8", "8-street", "t" + i))
+            IntStream.range(0, 101) .mapToObj(i -> new Tree("8", "8-street", "t" + i)),
+            IntStream.range(0, 256) .mapToObj(i -> new Tree("9", "9-street", "t" + i))
         )
             .flatMap(i -> i)
             .unordered()

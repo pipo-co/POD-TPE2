@@ -23,7 +23,8 @@ public class Query1Test extends AbstractQueryTest {
             new Neighbourhood("1", 30),
             new Neighbourhood("2", 30),
             new Neighbourhood("3", 30),
-            new Neighbourhood("4", 30)
+            new Neighbourhood("4", 30),
+            new Neighbourhood("11", 300)
         ).unordered();
 
         final Stream<Tree> trees = Stream.of(
@@ -32,6 +33,8 @@ public class Query1Test extends AbstractQueryTest {
             new Tree("3", "3-street", "t3"),
             new Tree("3", "4-street", "t4"),
             new Tree("1", "5-street", "t5"),
+            new Tree("11", "6-street", "t5"),
+            new Tree("11", "6-street", "t5"),
             new Tree("not_found", "5-street", "t6")
         ).unordered();
 
@@ -41,6 +44,7 @@ public class Query1Test extends AbstractQueryTest {
 
         final List<Q1Answer> expectedAnswers = List.of(
             new Q1Answer("1", 2),
+            new Q1Answer("11", 2),
             new Q1Answer("3", 2),
             new Q1Answer("2", 1)
         );
