@@ -10,6 +10,7 @@ public class Query5Test extends AbstractQueryTest {
 
     @Test
     public void test_query_5() {
+        // TODO
         final Map<String, String> map = client.getMap("hola");
 
         assertFalse(map.containsKey("test"));
