@@ -16,7 +16,6 @@ public abstract class AbstractQueryTest {
     public static final String TEST_GROUP_PASS = "g16-test-pass";
 
     private     TestHazelcastFactory    hazelcastFactory;
-    private   HazelcastInstance[]       servers;
     protected   HazelcastInstance       client;
 
     @BeforeEach
@@ -30,7 +29,7 @@ public abstract class AbstractQueryTest {
             ;
 
         // Create Servers
-        servers = hazelcastFactory.newInstances(new Config()
+        hazelcastFactory.newInstances(new Config()
             .setGroupConfig     (groupConfig)
             .addMultiMapConfig  (new MultiMapConfig("default")
                 .setValueCollectionType(MultiMapConfig.ValueCollectionType.LIST)
