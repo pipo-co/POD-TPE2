@@ -28,8 +28,8 @@ public class SortCollator<Key, Value, Answer> implements Collator<Map.Entry<Key,
         this.entryToAnswer  = requireNonNull(toAnswer);
         this.comparator     = requireNonNull(comparator);
         this.callback       = requireNonNull(callback);
-        this.skip           = 0;
-        this.limit          = Long.MAX_VALUE;
+        this.skip           = skip;
+        this.limit          = limit;
     }
 
     public SortCollator(
