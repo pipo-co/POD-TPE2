@@ -102,12 +102,6 @@ public class Query5 {
 
         metrics.recordInputProcessingEnd();
 
-        // filtro por barrio y especie
-        // map -> (calle, Tree.getName)
-        // combine -> count combiner
-        // reduce -> count reducer
-        // submit -> (calle, count)
-
         final Job<String, Integer> job1 = hazelcast
                 .getJobTracker(JOB_TRACKER_1_NAME)
                 .newJob(KeyValueSource.fromMultiMap(streetMap))
@@ -122,11 +116,6 @@ public class Query5 {
                 .submit         (new MapCollator<>(Q5PartialAnswer::fromEntry, streetCount::add))
                 .get            ()
         ;
-
-        // map -> ((count/10)*10, calle)
-        // combine -> value set combiner
-        // reduce -> (count, calleA, calleB)
-        // submit
 
         final Job<String, Q5PartialAnswer> job2 = hazelcast
                 .getJobTracker(JOB_TRACKER_2_NAME)

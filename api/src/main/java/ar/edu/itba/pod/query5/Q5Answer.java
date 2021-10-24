@@ -13,6 +13,7 @@ public class Q5Answer implements DataSerializable, Comparable<Q5Answer> {
     private static final Comparator<Q5Answer> ORDER = Comparator
             .comparing      (Q5Answer::getGroup)
             .thenComparing  (Q5Answer::getStreetA)
+            .thenComparing  (Q5Answer::getStreetB)
             ;
 
     private int     group;
