@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Stream;
 
+import ar.edu.itba.pod.client.queries.*;
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.client.config.ClientNetworkConfig;
@@ -28,10 +29,6 @@ import com.hazelcast.core.HazelcastInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ar.edu.itba.pod.client.queries.Query1;
-import ar.edu.itba.pod.client.queries.Query2;
-import ar.edu.itba.pod.client.queries.Query3;
-import ar.edu.itba.pod.client.queries.Query4;
 import ar.edu.itba.pod.models.Neighbourhood;
 import ar.edu.itba.pod.models.Tree;
 
@@ -195,6 +192,7 @@ public final class Client {
         Q2(Query2::executeToCSV),
         Q3(Query3::executeToCSV),
         Q4(Query4::executeToCSV),
+        Q5(Query5::executeToCSV),
         ;
 
         public static final List<QueryEnum> VALUES  = Arrays.asList(values());
