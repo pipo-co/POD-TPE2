@@ -13,7 +13,6 @@ import java.util.stream.Stream;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IList;
 import com.hazelcast.core.MultiMap;
-import com.hazelcast.mapreduce.Job;
 import com.hazelcast.mapreduce.KeyValueSource;
 
 import ar.edu.itba.pod.client.QueryMetrics;
@@ -91,15 +90,11 @@ public final class Query4 {
         hoods.map(Neighbourhood::getName).forEach(hoodsName::add);
 
         metrics.recordInputProcessingEnd();
-
-        final Job<String, Tree> job1 = hazelcast
-            .getJobTracker(JOB_TRACKER_1_NAME)
-            .newJob(KeyValueSource.fromMultiMap(treeMap))
-            ;
-
         metrics.recordMapReduceJobStart();
 
-        job1
+        hazelcast
+            .getJobTracker  (JOB_TRACKER_1_NAME)
+            .newJob         (KeyValueSource.fromMultiMap(treeMap))
             .keyPredicate   (new CollectionContainsKeyPredicate<>(HOODS_NAME_SET_NAME, HazelcastCollectionExtractor.SET))
             .mapper         (new Q3Mapper())
             .combiner       (new ValueSetCombinerFactory<>())
@@ -108,17 +103,14 @@ public final class Query4 {
             .get            ()
             ;
 
-        final Job<String, Q3Answer> job2 = hazelcast
-            .getJobTracker(JOB_TRACKER_2_NAME)
-            .newJob(KeyValueSource.fromList(hoodSpecies))
-            ;
-
-        job2
-            .mapper     (new Q4Mapper())
-            .combiner   (new ValueSetCombinerFactory<>())
-            .reducer    (new Q4ReducerFactory())
-            .submit     (new SortPreSortedValuesCollator<>(GROUPS_ORDER, callback))
-            .get        ()
+        hazelcast
+            .getJobTracker  (JOB_TRACKER_2_NAME)
+            .newJob         (KeyValueSource.fromList(hoodSpecies))
+            .mapper         (new Q4Mapper())
+            .combiner       (new ValueSetCombinerFactory<>())
+            .reducer        (new Q4ReducerFactory())
+            .submit         (new SortPreSortedValuesCollator<>(GROUPS_ORDER, callback))
+            .get            ()
             ;
 
         metrics.recordMapReduceJobEnd();

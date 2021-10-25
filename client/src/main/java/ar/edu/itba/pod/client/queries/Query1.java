@@ -12,7 +12,6 @@ import java.util.stream.Stream;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.MultiMap;
-import com.hazelcast.mapreduce.Job;
 import com.hazelcast.mapreduce.KeyValueSource;
 
 import ar.edu.itba.pod.client.QueryMetrics;
@@ -81,15 +80,11 @@ public final class Query1 {
         hoods.map(Neighbourhood::getName).forEach(hoodsName::add);
 
         metrics.recordInputProcessingEnd();
-
-        final Job<String, Integer> job = hazelcast
-            .getJobTracker(JOB_TRACKER_NAME)
-            .newJob(KeyValueSource.fromMultiMap(treeHoodTo1))
-            ;
-
         metrics.recordMapReduceJobStart();
 
-        job
+        hazelcast
+            .getJobTracker  (JOB_TRACKER_NAME)
+            .newJob         (KeyValueSource.fromMultiMap(treeHoodTo1))
             .keyPredicate   (new CollectionContainsKeyPredicate<>(HOODS_NAME_SET_NAME, HazelcastCollectionExtractor.SET))
             .mapper         (new NopMapper<>())
             .combiner       (new CountCombinerFactory())

@@ -12,7 +12,6 @@ import ar.edu.itba.pod.utils.reducers.CountReducerFactory;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IList;
 import com.hazelcast.core.MultiMap;
-import com.hazelcast.mapreduce.Job;
 import com.hazelcast.mapreduce.KeyValueSource;
 
 import java.io.IOException;
@@ -25,7 +24,7 @@ import java.util.stream.Stream;
 import static ar.edu.itba.pod.client.QueryUtils.*;
 import static ar.edu.itba.pod.client.QueryUtils.queryAnswersToCSV;
 
-public class Query5 {
+public final class Query5 {
     private Query5() {
         //Static
     }
@@ -86,15 +85,11 @@ public class Query5 {
         trees.forEach(tree -> treeMap.put(tree, 1));
 
         metrics.recordInputProcessingEnd();
-
-        final Job<Tree, Integer> job1 = hazelcast
-            .getJobTracker(JOB_TRACKER_1_NAME)
-            .newJob(KeyValueSource.fromMultiMap(treeMap))
-            ;
-
         metrics.recordMapReduceJobStart();
 
-        job1
+        hazelcast
+            .getJobTracker  (JOB_TRACKER_1_NAME)
+            .newJob         (KeyValueSource.fromMultiMap(treeMap))
             .keyPredicate   (new Q5KeyPredicate(hood, species))
             .mapper         (new Q5FirstMapper())
             .combiner       (new CountCombinerFactory())
@@ -103,17 +98,14 @@ public class Query5 {
             .get            ()
             ;
 
-        final Job<String, Q5TransitionalAnswer> job2 = hazelcast
-            .getJobTracker(JOB_TRACKER_2_NAME)
-            .newJob(KeyValueSource.fromList(streetCount))
-            ;
-
-        job2
-            .mapper     (new Q5SecondMapper())
-            .combiner   (new ValueSetCombinerFactory<>())
-            .reducer    (new Q5ReducerFactory())
-            .submit     (new SortPreSortedValuesCollator<>(GROUPS_ORDER, callback))
-            .get        ()
+        hazelcast
+            .getJobTracker  (JOB_TRACKER_2_NAME)
+            .newJob         (KeyValueSource.fromList(streetCount))
+            .mapper         (new Q5SecondMapper())
+            .combiner       (new ValueSetCombinerFactory<>())
+            .reducer        (new Q5ReducerFactory())
+            .submit         (new SortPreSortedValuesCollator<>(GROUPS_ORDER, callback))
+            .get            ()
             ;
 
         metrics.recordMapReduceJobEnd();
