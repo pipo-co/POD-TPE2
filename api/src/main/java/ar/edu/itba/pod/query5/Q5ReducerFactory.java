@@ -6,6 +6,7 @@ import com.hazelcast.mapreduce.ReducerFactory;
 import java.util.*;
 
 public class Q5ReducerFactory implements ReducerFactory<Integer, Set<String>, Collection<Q5Answer>> {
+
     @Override
     public Reducer<Set<String>, Collection<Q5Answer>> newReducer(final Integer group) {
         return new Q5Reducer(group);
@@ -28,8 +29,8 @@ public class Q5ReducerFactory implements ReducerFactory<Integer, Set<String>, Co
         }
 
         @Override
-        public void reduce(final Set<String> hoodNames) {
-            for(final String streetA : hoodNames) {
+        public void reduce(final Set<String> streetNames) {
+            for(final String streetA : streetNames) {
                 for(final String streetB : streets) {
                     answers.add(new Q5Answer(group, streetA, streetB));
                 }
@@ -39,7 +40,7 @@ public class Q5ReducerFactory implements ReducerFactory<Integer, Set<String>, Co
 
         @Override
         public List<Q5Answer> finalizeReduce() {
-            answers.sort(Comparator.naturalOrder());
+            answers.sort(null);
             return answers;
         }
     }

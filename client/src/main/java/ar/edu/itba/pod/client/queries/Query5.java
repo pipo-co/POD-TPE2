@@ -8,9 +8,6 @@ import ar.edu.itba.pod.utils.collators.MapCollator;
 import ar.edu.itba.pod.utils.collators.SortPreSortedValuesCollator;
 import ar.edu.itba.pod.utils.combiners.CountCombinerFactory;
 import ar.edu.itba.pod.utils.combiners.ValueSetCombinerFactory;
-import ar.edu.itba.pod.utils.keyPredicates.CollectionContainsKeyPredicate;
-import ar.edu.itba.pod.utils.keyPredicates.HazelcastCollectionExtractor;
-import ar.edu.itba.pod.utils.mappers.NopMapper;
 import ar.edu.itba.pod.utils.reducers.CountReducerFactory;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IList;
@@ -21,7 +18,6 @@ import com.hazelcast.mapreduce.KeyValueSource;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Comparator;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -79,53 +75,52 @@ public class Query5 {
 
         final QueryMetrics.Builder metrics = QueryMetrics.build();
 
-        final MultiMap<String, Integer> streetMap = hazelcast.getMultiMap(TREE_MAP_NAME);
-        streetMap.clear();
+        final MultiMap<Tree, Integer> treeMap = hazelcast.getMultiMap(TREE_MAP_NAME);
+        treeMap.clear();
 
-        final IList<Q5PartialAnswer> streetCount = hazelcast.getList(STREET_COUNT_LIST_NAME);
+        final IList<Q5TransitionalAnswer> streetCount = hazelcast.getList(STREET_COUNT_LIST_NAME);
         streetCount.clear();
 
         metrics.recordInputProcessingStart();
 
-        trees.filter(tree -> tree.getHoodName().equals(neighbourhood))
-             .filter(tree -> tree.getName().equals(species))
-             .forEach(tree -> streetMap.put(tree.getHoodStreet(), 1));
+        trees.forEach(tree -> treeMap.put(tree, 1));
 
         metrics.recordInputProcessingEnd();
 
-        final Job<String, Integer> job1 = hazelcast
-                .getJobTracker(JOB_TRACKER_1_NAME)
-                .newJob(KeyValueSource.fromMultiMap(streetMap))
-                ;
+        final Job<Tree, Integer> job1 = hazelcast
+            .getJobTracker(JOB_TRACKER_1_NAME)
+            .newJob(KeyValueSource.fromMultiMap(treeMap))
+            ;
 
         metrics.recordMapReduceJobStart();
 
         job1
-                .mapper         (new NopMapper<>())
-                .combiner       (new CountCombinerFactory())
-                .reducer        (new CountReducerFactory())
-                .submit         (new MapCollator<>(Q5PartialAnswer::fromEntry, streetCount::add))
-                .get            ()
-        ;
+            .keyPredicate   (new Q5KeyPredicate(hood, species))
+            .mapper         (new Q5FirstMapper())
+            .combiner       (new CountCombinerFactory())
+            .reducer        (new CountReducerFactory())
+            .submit         (new MapCollator<>(Q5TransitionalAnswer::fromEntry, streetCount::add))
+            .get            ()
+            ;
 
-        final Job<String, Q5PartialAnswer> job2 = hazelcast
-                .getJobTracker(JOB_TRACKER_2_NAME)
-                .newJob(KeyValueSource.fromList(streetCount))
-                ;
+        final Job<String, Q5TransitionalAnswer> job2 = hazelcast
+            .getJobTracker(JOB_TRACKER_2_NAME)
+            .newJob(KeyValueSource.fromList(streetCount))
+            ;
 
         job2
-                .mapper     (new Q5Mapper())
-                .combiner   (new ValueSetCombinerFactory<>())
-                .reducer    (new Q5ReducerFactory())
-                .submit     (new SortPreSortedValuesCollator<>(GROUPS_ORDER, callback))
-                .get        ()
-        ;
+            .mapper     (new Q5SecondMapper())
+            .combiner   (new ValueSetCombinerFactory<>())
+            .reducer    (new Q5ReducerFactory())
+            .submit     (new SortPreSortedValuesCollator<>(GROUPS_ORDER, callback))
+            .get        ()
+            ;
 
         metrics.recordMapReduceJobEnd();
 
         // Limpiamos recursos usados
-        streetMap.clear();
-        streetCount.clear();
+        treeMap     .clear();
+        streetCount .clear();
 
         return metrics.build();
     }
