@@ -38,21 +38,29 @@ public final class QueryUtils {
     }
 
     private static final String INVALID_POSITIVE_INT_MSG_TEMPLATE = "'%s' must be a positive integer";
-    public static int getRequiredPositiveIntProperty(final String propertyName) {
-        final String intProp = getRequiredProperty(propertyName);
-
+    private static int parsePositiveIntProperty(final String intValue, final String propertyName) {
         final int ret;
         try {
-            ret = Integer.parseInt(intProp);
+            ret = Integer.parseInt(intValue);
         } catch(final NumberFormatException e) {
-            throw new IllegalArgumentException(String.format(DEFAULT_LOCALE, INVALID_POSITIVE_INT_MSG_TEMPLATE, intProp));
+            throw new IllegalArgumentException(String.format(DEFAULT_LOCALE, INVALID_POSITIVE_INT_MSG_TEMPLATE, propertyName));
         }
 
         if(ret <= 0) {
-            throw new IllegalArgumentException(String.format(DEFAULT_LOCALE, INVALID_POSITIVE_INT_MSG_TEMPLATE, intProp));
+            throw new IllegalArgumentException(String.format(DEFAULT_LOCALE, INVALID_POSITIVE_INT_MSG_TEMPLATE, propertyName));
         }
 
         return ret;
+    }
+    public static int getPositiveIntProperty(final String propertyName) {
+        return parsePositiveIntProperty(getRequiredProperty(propertyName), propertyName);
+    }
+    public static int getPositiveIntProperty(final String propertyName, final int defaultValue) {
+        final String intValue = System.getProperty(propertyName);
+        if(intValue == null) {
+            return defaultValue;
+        }
+        return parsePositiveIntProperty(intValue, propertyName);
     }
 
     /* ---------------------------------- Hazelcast ------------------------------------- */

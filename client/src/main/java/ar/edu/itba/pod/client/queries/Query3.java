@@ -2,8 +2,6 @@ package ar.edu.itba.pod.client.queries;
 
 import static ar.edu.itba.pod.client.QueryUtils.*;
 
-import static ar.edu.itba.pod.client.QueryUtils.hazelcastNamespace;
-
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Comparator;
@@ -33,11 +31,12 @@ public final class Query3 {
         // static
     }
 
-    public  static final String PROPERTY_ANSWER_COUNT = "n";
+    public  static final String PROPERTY_ANSWER_COUNT   = "n";
+    public  static final int    DEFAULT_ANSWER_COUNT    = Integer.MAX_VALUE;
 
-    private static final String JOB_TRACKER_NAME    = hazelcastNamespace("q3-job-tracker");
-    private static final String TREE_MAP_NAME       = hazelcastNamespace("q3-tree-map");
-    private static final String HOODS_NAME_SET_NAME = hazelcastNamespace("q3-hoods-name-set");
+    private static final String JOB_TRACKER_NAME        = hazelcastNamespace("q3-job-tracker");
+    private static final String TREE_MAP_NAME           = hazelcastNamespace("q3-tree-map");
+    private static final String HOODS_NAME_SET_NAME     = hazelcastNamespace("q3-hoods-name-set");
 
     private static final Comparator<Q3Answer> ANSWER_ORDER = Comparator.comparing(Q3Answer::getDistinctSpecies).reversed().thenComparing(Q3Answer::getHoodName);
 
@@ -68,7 +67,7 @@ public final class Query3 {
             final Stream<Tree> trees, final Stream<Neighbourhood> hoods,
             final Consumer<Q3Answer> callback) throws ExecutionException, InterruptedException {
 
-        final int answerCount = getRequiredPositiveIntProperty(PROPERTY_ANSWER_COUNT);
+        final int answerCount = getPositiveIntProperty(PROPERTY_ANSWER_COUNT, DEFAULT_ANSWER_COUNT);
 
         final QueryMetrics.Builder metrics = QueryMetrics.build();
 

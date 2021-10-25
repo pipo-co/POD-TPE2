@@ -130,7 +130,7 @@ public final class Client {
         logger.info("Client Starting ...");
 
         // Required
-        final int           queryCount  = getRequiredPositiveIntProperty(PROPERTY_QUERY);
+        final int           queryCount  = getPositiveIntProperty(PROPERTY_QUERY);
         final String        city        = getRequiredProperty(PROPERTY_CITY);
 
         // Optional
