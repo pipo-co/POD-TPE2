@@ -179,9 +179,9 @@ public final class Client {
             );
 
             writeQueryMetrics(metricsWriter, metrics);
+        } finally {
+            HazelcastClient.shutdownAll();
         }
-
-        HazelcastClient.shutdownAll();
 
         logger.info("Query " + queryCount + " Finished");
     }
