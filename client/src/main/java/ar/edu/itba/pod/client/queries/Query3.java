@@ -33,12 +33,11 @@ public final class Query3 {
         // static
     }
 
+    public  static final String PROPERTY_ANSWER_COUNT = "n";
+
     private static final String JOB_TRACKER_NAME    = hazelcastNamespace("q3-job-tracker");
     private static final String TREE_MAP_NAME       = hazelcastNamespace("q3-tree-map");
     private static final String HOODS_NAME_SET_NAME = hazelcastNamespace("q3-hoods-name-set");
-
-    public  static final String PROPERTY_ANSWER_COUNT = "n";
-    private static final String INVALID_ANSWER_COUNT_MSG = "'" + PROPERTY_ANSWER_COUNT + "' parameter must be a positive integer";
 
     private static final Comparator<Q3Answer> ANSWER_ORDER = Comparator.comparing(Q3Answer::getDistinctSpecies).reversed().thenComparing(Q3Answer::getHoodName);
 
@@ -55,25 +54,6 @@ public final class Query3 {
         writer.write(NEW_LINE);
     }
 
-    private static int parseAnswerCount(final String answerCount) {
-        final int ret;
-        if(answerCount == null) {
-            throw new IllegalArgumentException("'" + PROPERTY_ANSWER_COUNT + "' parameter is required");
-        }
-
-        try {
-            ret = Integer.parseInt(answerCount);
-        } catch(final NumberFormatException e) {
-            throw new IllegalArgumentException(INVALID_ANSWER_COUNT_MSG);
-        }
-
-        if(ret <= 0) {
-            throw new IllegalArgumentException(INVALID_ANSWER_COUNT_MSG);
-        }
-
-        return ret;
-    }
-
     public static QueryMetrics executeToCSV(
         final HazelcastInstance hazelcast,
         final Stream<Tree> trees, final Stream<Neighbourhood> hoods,
@@ -88,7 +68,7 @@ public final class Query3 {
             final Stream<Tree> trees, final Stream<Neighbourhood> hoods,
             final Consumer<Q3Answer> callback) throws ExecutionException, InterruptedException {
 
-        final int answerCount = parseAnswerCount(System.getProperty(PROPERTY_ANSWER_COUNT));
+        final int answerCount = getRequiredPositiveIntProperty(PROPERTY_ANSWER_COUNT);
 
         final QueryMetrics.Builder metrics = QueryMetrics.build();
 

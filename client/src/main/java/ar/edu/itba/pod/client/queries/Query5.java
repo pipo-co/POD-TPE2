@@ -17,7 +17,6 @@ import com.hazelcast.core.IList;
 import com.hazelcast.core.MultiMap;
 import com.hazelcast.mapreduce.Job;
 import com.hazelcast.mapreduce.KeyValueSource;
-import com.hazelcast.util.StringUtil;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -35,29 +34,22 @@ public class Query5 {
         //Static
     }
 
+    public  static final String PROPERTY_NEIGHBOURHOOD  = "neighbourhood";
+    public  static final String PROPERTY_SPECIES        = "commonName";
+
     private static final String JOB_TRACKER_1_NAME      = hazelcastNamespace("q5-job-1-tracker");
     private static final String JOB_TRACKER_2_NAME      = hazelcastNamespace("q5-job-2-tracker");
     private static final String TREE_MAP_NAME           = hazelcastNamespace("q5-tree-map");
     private static final String STREET_COUNT_LIST_NAME  = hazelcastNamespace("q5-street-count-list");
-    public  static final String PROPERTY_NEIGHBOURHOOD  = "neighbourhood";
-    public  static final String PROPERTY_SPECIES        = "commonName";
-    public  static final String INVALID_PARAM_EXCEPTION = " parameter can't be null or empty";
 
     private static final Comparator<Integer> GROUPS_ORDER = Comparator.reverseOrder();
 
     public static final String CSV_HEADER = csvHeaderJoiner()
-            .add("GROUP")
-            .add("STREET A")
-            .add("STREET B")
-            .toString()
-            ;
-
-    private static String verifyStringParameter(final String param, final String paramName) {
-        if (StringUtil.isNullOrEmpty(param)){
-            throw new IllegalArgumentException(paramName + INVALID_PARAM_EXCEPTION);
-        }
-        return param;
-    }
+        .add("GROUP")
+        .add("STREET A")
+        .add("STREET B")
+        .toString()
+        ;
 
     public static void writeAnswerToCsv(final Writer writer, final Q5Answer answer) throws IOException {
         writer.write(Integer.toString(answer.getGroup()));
@@ -82,9 +74,8 @@ public class Query5 {
             final Stream<Tree> trees, final Stream<Neighbourhood> hoods,
             final Consumer<Q5Answer> callback) throws ExecutionException, InterruptedException {
 
-        final String neighbourhood = verifyStringParameter(System.getProperty(PROPERTY_NEIGHBOURHOOD), PROPERTY_NEIGHBOURHOOD);
-
-        final String species = verifyStringParameter(System.getProperty(PROPERTY_SPECIES), PROPERTY_SPECIES);
+        final String hood       = getRequiredProperty(PROPERTY_NEIGHBOURHOOD);
+        final String species    = getRequiredProperty(PROPERTY_SPECIES);
 
         final QueryMetrics.Builder metrics = QueryMetrics.build();
 

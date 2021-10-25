@@ -18,22 +18,58 @@ public final class QueryUtils {
         // static
     }
 
+    /* ------------------------------ System Constants ------------------------------------ */
+
+    /** Constantes para centralizar el locale y que no sea system dependant */
+    public static final Locale DEFAULT_LOCALE   = Locale.ROOT;
+    public static final ZoneId DEFAULT_ZONE_ID  = ZoneId.of("UTC");
+
+    public static final String NEW_LINE         = System.lineSeparator();
+
+    /* ----------------------------- Parameter Validation --------------------------------- */
+
+    private static final String MISSING_PARAM_MSG_TEMPLATE = "'%s' parameter is required";
+    public static String getRequiredProperty(final String propertyName) {
+        final String ret = System.getProperty(propertyName);
+        if(ret == null || ret.isEmpty()) {
+            throw new IllegalArgumentException(String.format(DEFAULT_LOCALE, MISSING_PARAM_MSG_TEMPLATE, propertyName));
+        }
+        return ret;
+    }
+
+    private static final String INVALID_POSITIVE_INT_MSG_TEMPLATE = "'%s' must be a positive integer";
+    public static int getRequiredPositiveIntProperty(final String propertyName) {
+        final String intProp = getRequiredProperty(propertyName);
+
+        final int ret;
+        try {
+            ret = Integer.parseInt(intProp);
+        } catch(final NumberFormatException e) {
+            throw new IllegalArgumentException(String.format(DEFAULT_LOCALE, INVALID_POSITIVE_INT_MSG_TEMPLATE, intProp));
+        }
+
+        if(ret <= 0) {
+            throw new IllegalArgumentException(String.format(DEFAULT_LOCALE, INVALID_POSITIVE_INT_MSG_TEMPLATE, intProp));
+        }
+
+        return ret;
+    }
+
+    /* ---------------------------------- Hazelcast ------------------------------------- */
+
     public static final String COLLECTIONS_PREFIX = "g16-";
     public static String hazelcastNamespace(final String name) {
         return COLLECTIONS_PREFIX + name;
     }
 
+    /* -------------------------------- IO/CSV Handling ---------------------------------- */
+
     public static final String IN_DELIM     = ";";
     public static final String OUT_DELIM    = ";";
-    public static final String NEW_LINE     = System.lineSeparator();
 
     public static StringJoiner csvHeaderJoiner() {
         return new StringJoiner(OUT_DELIM, "", NEW_LINE);
     }
-
-    /** Constantes para centralizar el locale y que no sea system dependant */
-    public static final Locale DEFAULT_LOCALE   = Locale.ROOT;
-    public static final ZoneId DEFAULT_ZONE_ID  = ZoneId.of("UTC");
 
     public static <Answer> QueryMetrics queryAnswersToCSV(
         final Query<Answer> query, final HazelcastInstance hazelcast,

@@ -1,7 +1,6 @@
 package ar.edu.itba.pod.client;
 
 import static ar.edu.itba.pod.client.QueryUtils.*;
-import static java.util.Objects.requireNonNull;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -131,8 +130,8 @@ public final class Client {
         logger.info("Client Starting ...");
 
         // Required
-        final int           queryCount  = Integer.parseInt(System.getProperty(PROPERTY_QUERY));
-        final String        city        = requireNonNull(System.getProperty(PROPERTY_CITY));
+        final int           queryCount  = getRequiredPositiveIntProperty(PROPERTY_QUERY);
+        final String        city        = getRequiredProperty(PROPERTY_CITY);
 
         // Optional
         final Charset       charset     = parseCharset(System.getProperty(PROPERTY_CHARSET, DEFAULT_CHARSET));
