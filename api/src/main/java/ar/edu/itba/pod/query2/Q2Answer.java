@@ -46,7 +46,8 @@ public class Q2Answer implements DataSerializable {
         final Q2Answer q2Answer = (Q2Answer) o;
         return Double.compare(q2Answer.treesPerInhabitant, treesPerInhabitant) == 0
             && Objects.equals(hoodName, q2Answer.hoodName)
-            && Objects.equals(treeName, q2Answer.treeName);
+            && Objects.equals(treeName, q2Answer.treeName)
+            ;
     }
 
     @Override

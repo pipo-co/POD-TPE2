@@ -57,7 +57,8 @@ public class Q4Answer implements DataSerializable, Comparable<Q4Answer> {
         final Q4Answer q4Answer = (Q4Answer) o;
         return group == q4Answer.group
             && Objects.equals(hoodA, q4Answer.hoodA)
-            && Objects.equals(hoodB, q4Answer.hoodB);
+            && Objects.equals(hoodB, q4Answer.hoodB)
+            ;
     }
 
     @Override

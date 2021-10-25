@@ -44,7 +44,8 @@ public class Q3Answer implements DataSerializable {
         if(!(o instanceof Q3Answer)) return false;
         final Q3Answer q3Answer = (Q3Answer) o;
         return distinctSpecies == q3Answer.distinctSpecies
-            && Objects.equals(hoodName, q3Answer.hoodName);
+            && Objects.equals(hoodName, q3Answer.hoodName)
+            ;
     }
 
     @Override
