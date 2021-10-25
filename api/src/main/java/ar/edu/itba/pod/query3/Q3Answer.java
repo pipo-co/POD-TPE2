@@ -1,5 +1,7 @@
 package ar.edu.itba.pod.query3;
 
+import static java.util.Objects.*;
+
 import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
@@ -18,7 +20,7 @@ public class Q3Answer implements DataSerializable {
     }
 
     public Q3Answer(final String hoodName, final int differentSpecies) {
-        this.hoodName           = hoodName;
+        this.hoodName           = requireNonNull(hoodName);
         this.distinctSpecies    = differentSpecies;
     }
 
@@ -50,7 +52,7 @@ public class Q3Answer implements DataSerializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(hoodName, distinctSpecies);
+        return hash(hoodName, distinctSpecies);
     }
 
     @Override

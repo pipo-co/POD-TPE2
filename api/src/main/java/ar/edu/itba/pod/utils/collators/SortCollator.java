@@ -26,7 +26,7 @@ public class SortCollator<Key, Value, Answer> implements Collator<Map.Entry<Key,
         final Consumer<Answer>                          callback) {
 
         this.entryToAnswer  = requireNonNull(toAnswer);
-        this.comparator     = requireNonNull(comparator);
+        this.comparator     = comparator;
         this.callback       = requireNonNull(callback);
         this.skip           = skip;
         this.limit          = limit;
@@ -40,8 +40,9 @@ public class SortCollator<Key, Value, Answer> implements Collator<Map.Entry<Key,
         this(toAnswer, comparator, 0, Long.MAX_VALUE, callback);
     }
 
+    /** @throws ClassCastException si {@link #comparator} en null y {@link Answer} no extiende a {@link Comparable<Answer>} */
     @Override
-    public Void collate(final Iterable<Map.Entry<Key, Value>> entries) {
+    public Void collate(final Iterable<Map.Entry<Key, Value>> entries) throws ClassCastException {
         StreamSupport.stream(entries.spliterator(), false)
             .map    (entryToAnswer)
             .sorted (comparator)

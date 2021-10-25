@@ -3,6 +3,7 @@ package ar.edu.itba.pod.models;
 import static java.util.Objects.*;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
@@ -36,6 +37,22 @@ public class Tree implements DataSerializable {
         hoodName    = in.readUTF();
         hoodStreet  = in.readUTF();
         name        = in.readUTF();
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if(this == o) return true;
+        if(!(o instanceof Tree)) return false;
+        final Tree tree = (Tree) o;
+        return Objects.equals(hoodName,     tree.hoodName)
+            && Objects.equals(hoodStreet,   tree.hoodStreet)
+            && Objects.equals(name,         tree.name)
+            ;
+    }
+
+    @Override
+    public int hashCode() {
+        return hash(hoodName, hoodStreet, name);
     }
 
     @Override

@@ -14,8 +14,8 @@ import ar.edu.itba.pod.models.Neighbourhood;
 public class Q2ReducerFactory implements ReducerFactory<Neighbourhood, Map<String, Long>, Q2Answer> {
 
     @Override
-    public Reducer<Map<String, Long>, Q2Answer> newReducer(final Neighbourhood neighbourhood) {
-        return new Q2Reducer(neighbourhood);
+    public Reducer<Map<String, Long>, Q2Answer> newReducer(final Neighbourhood hood) {
+        return new Q2Reducer(requireNonNull(hood));
     }
 
     private static class Q2Reducer extends Reducer<Map<String, Long>, Q2Answer> {
@@ -25,8 +25,8 @@ public class Q2ReducerFactory implements ReducerFactory<Neighbourhood, Map<Strin
         private final   Neighbourhood       hood;
         private         Map<String, Long>   treesCountMap;
 
-        public Q2Reducer(final Neighbourhood neighbourhood) {
-            this.hood = requireNonNull(neighbourhood);
+        public Q2Reducer(final Neighbourhood hood) {
+            this.hood = hood;
 
         }
 

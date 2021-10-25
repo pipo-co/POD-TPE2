@@ -1,5 +1,7 @@
 package ar.edu.itba.pod.query4;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -14,7 +16,7 @@ public class Q4ReducerFactory implements ReducerFactory<Integer, Set<String>, Co
 
     @Override
     public Reducer<Set<String>, Collection<Q4Answer>> newReducer(final Integer group) {
-        return new Q4Reducer(group);
+        return new Q4Reducer(requireNonNull(group));
     }
     
     private static class Q4Reducer extends Reducer<Set<String>, Collection<Q4Answer>> {

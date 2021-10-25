@@ -1,5 +1,7 @@
 package ar.edu.itba.pod.query5;
 
+import static java.util.Objects.requireNonNull;
+
 import com.hazelcast.mapreduce.Reducer;
 import com.hazelcast.mapreduce.ReducerFactory;
 
@@ -9,7 +11,7 @@ public class Q5ReducerFactory implements ReducerFactory<Integer, Set<String>, Co
 
     @Override
     public Reducer<Set<String>, Collection<Q5Answer>> newReducer(final Integer group) {
-        return new Q5Reducer(group);
+        return new Q5Reducer(requireNonNull(group));
     }
 
     private static class Q5Reducer extends Reducer<Set<String>, Collection<Q5Answer>> {

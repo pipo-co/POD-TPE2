@@ -1,6 +1,9 @@
 package ar.edu.itba.pod.models;
 
+import static java.util.Objects.*;
+
 import java.io.IOException;
+import java.util.Objects;
 
 import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
@@ -16,7 +19,7 @@ public class Neighbourhood implements DataSerializable {
     }
 
     public Neighbourhood(final String name, final long population) {
-        this.name       = name;
+        this.name       = requireNonNull(name);
         this.population = population;
     }
 
@@ -33,38 +36,26 @@ public class Neighbourhood implements DataSerializable {
     }
 
     @Override
+    public boolean equals(final Object o) {
+        if(this == o) return true;
+        if(!(o instanceof Neighbourhood)) return false;
+        final Neighbourhood that = (Neighbourhood) o;
+        return population == that.population
+            && Objects.equals(name, that.name)
+            ;
+    }
+
+    @Override
+    public int hashCode() {
+        return hash(name, population);
+    }
+
+    @Override
     public String toString() {
         return "Neighbourhood{" +
             "name='" + name + '\'' +
             ", population=" + population +
             '}';
-    }
-    
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        return result;
-    }
-
-    
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Neighbourhood other = (Neighbourhood) obj;
-        if (name == null) {
-            if (other.name != null)
-                return false;
-        } else if (!name.equals(other.name))
-            return false;
-        return true;
     }
 
     public String getName() {

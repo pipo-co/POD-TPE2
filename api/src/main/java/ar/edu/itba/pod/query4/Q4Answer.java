@@ -1,5 +1,7 @@
 package ar.edu.itba.pod.query4;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.Objects;
@@ -25,6 +27,8 @@ public class Q4Answer implements DataSerializable, Comparable<Q4Answer> {
 
     public Q4Answer(final int group, final String firstHood, final String secondHood) {
         this.group = group;
+        requireNonNull(firstHood);
+        requireNonNull(secondHood);
 
         final boolean ordered = firstHood.compareTo(secondHood) < 0;
         this.hoodA = ordered ? firstHood  : secondHood;

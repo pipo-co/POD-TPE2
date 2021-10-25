@@ -1,5 +1,7 @@
 package ar.edu.itba.pod.query2;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.IOException;
 import java.util.Objects;
 
@@ -21,7 +23,7 @@ public class Q2Answer implements DataSerializable {
 
     public Q2Answer(final Neighbourhood hood, final String treeName, final long totalTrees) {
         this.hoodName            = hood.getName();
-        this.treeName            = treeName;
+        this.treeName            = requireNonNull(treeName);
         this.treesPerInhabitant  = (double) totalTrees / hood.getPopulation();
     }
 

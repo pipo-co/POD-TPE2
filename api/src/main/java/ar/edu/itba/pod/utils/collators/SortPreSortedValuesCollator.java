@@ -20,12 +20,6 @@ public class SortPreSortedValuesCollator<Key, Answer> implements Collator<Map.En
         this.callback   = requireNonNull(callback);
     }
 
-    /** @throws ClassCastException si {@link Answer} no es Comparable */
-    @SuppressWarnings("unchecked")
-    public SortPreSortedValuesCollator(final Consumer<Answer> callback) throws ClassCastException {
-        this((Comparator<? super Key>) Comparator.naturalOrder(), callback);
-    }
-
     @Override
     public Void collate(final Iterable<Map.Entry<Key, Collection<Answer>>> entries) {
         StreamSupport.stream(entries.spliterator(), false)
