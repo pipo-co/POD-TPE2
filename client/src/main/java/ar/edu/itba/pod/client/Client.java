@@ -55,32 +55,32 @@ public final class Client {
     public static final String DEFAULT_GROUP_PASS = "g16-pass";
     public static final String DEFAULT_ADDRESS    = "127.0.0.1:" + NetworkConfig.DEFAULT_PORT;
 
-    private static QueryToCSV getQuery(final int queryCount) {
+    public static QueryToCSV getQuery(final int queryCount) {
         if(queryCount < 1 || queryCount > QueryEnum.SIZE) {
-            throw new IllegalArgumentException("Invalid query count " + queryCount + ". Values go from 1 to " + QueryEnum.SIZE);
+            throw new IllegalArgumentException("Invalid query number " + queryCount + ". Values go from 1 to " + QueryEnum.SIZE);
         }
         return QueryEnum.VALUES.get(queryCount - 1);
     }
 
-    private static Charset parseCharset(final String charsetName) {
+    public static Charset parseCharset(final String charsetName) {
         return Charset.forName(charsetName == null ? DEFAULT_CHARSET : charsetName);
     }
 
     private static final String PROPERTY_LIST_DELIM = ";";
-    private static List<String> parseAddresses(final String addressList) {
+    public static List<String> parseAddresses(final String addressList) {
         if(addressList == null) {
             return List.of(DEFAULT_ADDRESS);
         }
         return Arrays.asList(addressList.split(PROPERTY_LIST_DELIM));
     }
 
-    private static Path requireReadable(final Path path) {
+    public static Path requireReadable(final Path path) {
         if(!Files.isReadable(path)) {
-            throw new IllegalArgumentException("Path " + path + " must be a regular file");
+            throw new IllegalArgumentException("Path " + path + " must exist and be a readable file");
         }
         return path;
     }
-    private static Path createWritableFile(final Path path) throws IOException {
+    public static Path createWritableFile(final Path path) throws IOException {
         Files.newByteChannel(path, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING).close();
         return path;
     }
