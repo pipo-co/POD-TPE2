@@ -26,7 +26,7 @@ public class Server {
     public static final String PROPERTY_MEMBERS             = "members";
     public static final String PROPERTY_PORT                = "port";
     public static final String PROPERTY_MGMT_CENTER_URL     = "mgmtCenterUrl";
-    public static final String PROPERTY_ENABLE_MGMT_CENTER  = "enable";
+    public static final String PROPERTY_ENABLE_MGMT_CENTER  = "mgmtCenterEnable";
 
     public static final String DEFAULT_GROUP_NAME           = "g16";
     public static final String DEFAULT_GROUP_PASS           = "g16-pass";

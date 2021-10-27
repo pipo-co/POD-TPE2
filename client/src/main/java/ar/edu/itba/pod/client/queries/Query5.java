@@ -22,7 +22,6 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static ar.edu.itba.pod.client.QueryUtils.*;
-import static ar.edu.itba.pod.client.QueryUtils.queryAnswersToCSV;
 
 public final class Query5 {
     private Query5() {
