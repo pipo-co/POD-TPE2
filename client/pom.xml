@@ -23,7 +23,7 @@
     <!-- Modules -->
     <dependency>
       <groupId>ar.edu.itba.pod</groupId>
-      <artifactId>tp2-api</artifactId>
+      <artifactId>tpe2-g16-api</artifactId>
       <version>${project.parent.version}</version>
     </dependency>
 
