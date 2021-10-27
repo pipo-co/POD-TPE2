@@ -3,14 +3,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>tp2-parent</artifactId>
+    <artifactId>tpe2-g16-parent</artifactId>
     <groupId>ar.edu.itba.pod</groupId>
     <version>1.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>tp2-api</artifactId>
+  <artifactId>tpe2-g16-api</artifactId>
   <version>1.0</version>
-  <name>tp2-api</name>
+  <name>tpe2-g16-api</name>
 
   <dependencies>
     <dependency>
